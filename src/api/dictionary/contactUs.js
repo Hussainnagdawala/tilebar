@@ -1,5 +1,5 @@
-const ContactUsData  = {
-    contact :()=>'/website/contact-us'
-}
-export default ContactUsData
+// const ContactUsData  = {
+//     contact :()=>'/website/contact-us'
+// }
+// export default ContactUsData
 
