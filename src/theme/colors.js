@@ -2,6 +2,7 @@ export const colors = {
   primary: {
     main: "#413e32",
     light: "rgba(237, 242, 247, 1)",
+    main2 : '#635d4f'
   },
   secondary: {
     main: "rgba(21, 146, 131, 0.05)",

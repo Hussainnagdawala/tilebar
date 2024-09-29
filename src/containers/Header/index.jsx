@@ -142,7 +142,11 @@ const Index = () => {
               sx={headerStyles.smallScreenLogoBoxStyles}
               onClick={() => navigate(RoutePaths.overViewPath)}
             >
-              <SRSicon {...{ width: "155px", height: "58px" }} />
+              <img
+                src="https://i.ibb.co/jL1D25m/mylogo.png"
+                alt=""
+                width="175px"
+              />
             </Box>
           )}
           <Typography
@@ -226,7 +230,11 @@ const Index = () => {
           sx={headerStyles.headerCollapsibleDrawer}
         >
           <Box textAlign={"center"} py={2}>
-            <SRSicon width={"155px"} height={"58px"} />
+            <img
+              src="https://i.ibb.co/jL1D25m/mylogo.png"
+              alt=""
+              width="175px"
+            />
           </Box>
           <NavigationLists handleDrawerToggle={handleDrawerToggle} />
         </Drawer>

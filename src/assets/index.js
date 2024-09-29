@@ -1,6 +1,5 @@
 export * from "./images";
 export { default as ProvideDigital } from "./icons/ProvideDigital";
-export { default as SRSicon } from "./icons/SRSicon";
 export { default as OverviewIcon } from "./icons/Overview";
 export { default as PatientIcon } from "./icons/Patient";
 export { default as ReferralIcon } from "./icons/Referral";

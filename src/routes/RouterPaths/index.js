@@ -2,7 +2,7 @@
 export const RoutePaths = {
   // loginPath: "/auth/:activeTab",
   dashboardPath: "/",
-  loginPath: "/auth",
+  loginPath: "/auth/:activeTab",
   categoryPath: "/category",
   // acceptedPath: "/accepted",
   // profilePath: "/profile",

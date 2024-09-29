@@ -15,7 +15,7 @@ const Index = ({ children }) => {
   useEffect(() => {
     if (!isToken) {
       console.log("inside member layout");
-      navigate("/auth");
+      navigate("/auth/login");
     }
   }, [isToken, navigate]);
 

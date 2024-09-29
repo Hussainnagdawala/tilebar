@@ -3,9 +3,9 @@ import { lazy } from "react";
 
 const MemberLayout = lazy(() => import("../../layout copy/MemberLayout"));
 const VisitorLayout = lazy(() => import("../../layout copy/VisitorLayout"));
-const Auth = lazy(() => import("../../Components/Auth"));
-const Category = lazy(() => import("../../Components/Dashboard/Dashboard"));
-const Dashboard = lazy(() => import("../../Components/Dashboard/Dashboard"));
+const Auth = lazy(() => import("../../Pages/Auth"));
+const Category = lazy(() => import("../../Pages/Dashboard/Dashboard"));
+const Dashboard = lazy(() => import("../../Pages/Dashboard/Dashboard"));
 // const Accepted = lazy(() => import("../../pages/Accepted"));
 // const RedFlag = lazy(() => import("../../pages/RedFlag"));
 // const Rejected = lazy(() => import("../../pages/Rejected"));

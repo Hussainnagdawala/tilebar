@@ -14,7 +14,6 @@ const Index = () => {
               alt=""
               width="175px"
             />
-            {/* <SRSicon {...{ width: "155px", height: "58px" }} /> */}
           </Box>
         </Toolbar>
         <NavigationLists handleDrawerToggle={() => {}} />
