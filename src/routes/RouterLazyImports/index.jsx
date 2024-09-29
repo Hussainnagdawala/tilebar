@@ -1,8 +1,8 @@
 //here all lazy import will come
 import { lazy } from "react";
 
-const MemberLayout = lazy(() => import("../../layout copy/MemberLayout"));
-const VisitorLayout = lazy(() => import("../../layout copy/VisitorLayout"));
+const MemberLayout = lazy(() => import("../../Layout/MemberLayout"));
+const VisitorLayout = lazy(() => import("../../Layout/VisitorLayout"));
 const Auth = lazy(() => import("../../Pages/Auth"));
 const Category = lazy(() => import("../../Pages/Dashboard/Dashboard"));
 const Dashboard = lazy(() => import("../../Pages/Dashboard/Dashboard"));

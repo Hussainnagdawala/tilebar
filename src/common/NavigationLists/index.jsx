@@ -7,27 +7,18 @@ import {
   ListItemIcon,
   ListItemText,
   Stack,
-  // useMediaQuery,
-  // useTheme,
 } from "@mui/material";
-// import { MenuItem } from "@schemas";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { colors } from "../../theme";
 import { styles } from "./style";
 import { useLocation, useMatch, useNavigate } from "react-router-dom";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { useLocalStorage, useEmpty } from "../../hooks";
-
-// type NavigationPropType = {
-//   handleDrawerToggle: () => void;
-// };
+import { useEmpty } from "../../hooks";
 
 export const NavigationLists = ({ handleDrawerToggle }) => {
   const [openSubMenus, setOpenSubMenus] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { load } = useLocalStorage();
-  const userData = load("user");
   const { isValidArray } = useEmpty();
 
   const HandleMatchPathActive = (href) => {
@@ -63,22 +54,15 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
       : setOpenSubMenus(false);
   }, []);
 
-  const getMenuListData = useMemo(() => {
-    const getIsAdminGranted = userData?.isAdminAccess
-      ? globalConstant.MENU_LIST
-      : globalConstant.MENU_LIST.slice(0, -1);
-    return getIsAdminGranted;
-  }, [userData]);
-
   return (
     <Stack
       direction={"column"}
       justifyContent={"space-between"}
       height={"100%"}
     >
-      <List>
-        {isValidArray(getMenuListData) &&
-          getMenuListData.map((item) => {
+      <List sx={{ px: 4 }}>
+        {isValidArray(globalConstant.MENU_LIST) &&
+          globalConstant.MENU_LIST.map((item) => {
             const Icon = item.icon;
             const hasChildren = item.children && item.children.length > 0;
             return (
@@ -86,17 +70,26 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
                 <ListItem
                   disablePadding
                   sx={{
-                    borderRight: HandleMatchPathActive(item.path)
-                      ? `5px solid #fbc32d`
-                      : undefined,
-                    color: HandleMatchPathActive(item.path)
+                    borderRadius: "10px",
+                    mb: 3,
+                    background: HandleMatchPathActive(item.path)
                       ? colors.primary.main
-                      : `${colors.tertiary.main}`,
+                      : "transparent",
+                    color: HandleMatchPathActive(item.path)
+                      ? colors.white.main
+                      : colors.primary.main,
+                    "&:hover": {
+                      background:
+                        HandleMatchPathActive(item.path) && colors.primary.main,
+                    },
                   }}
                   onClick={() => handleMenuItemClick(item)}
                 >
                   <ListItemButton
-                    sx={styles.onHoverBackgroundTransparent}
+                    sx={{
+                      ...styles.onHoverBackgroundTransparent,
+                      borderRadius: "10px",
+                    }}
                     selected={HandleMatchPathActive(item.path)}
                   >
                     <ListItemIcon sx={{ minWidth: "45px" }}>
@@ -105,17 +98,12 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
                         height="30px"
                         color={
                           HandleMatchPathActive(item.path)
-                            ? "#fbc32d"
-                            : "#fbc32d60"
+                            ? colors.white.main
+                            : colors.primary.main
                         }
                       />
                     </ListItemIcon>
-                    <ListItemText
-                      sx={{
-                        color: "#fbc32d",
-                      }}
-                      primary={item.title}
-                    />
+                    <ListItemText primary={item.title} />
                     {hasChildren &&
                       (!openSubMenus ? <ExpandMore /> : <ExpandLess />)}
                   </ListItemButton>
@@ -194,48 +182,51 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
           })}
       </List>
       {/* ends */}
-      {/* <List>
-        {globalConstant.UTILITY_MENU_LIST.map((item: MenuItem) => {
+      <List sx={{ px: 4 }}>
+        {globalConstant.UTILITY_MENU_LIST.map((item) => {
           const Icon = item.icon;
           return (
             <React.Fragment key={item.title}>
               <ListItem
                 disablePadding
                 sx={{
-                  borderRight: HandleMatchPathActive(item.path )
-                    ? `5px solid ${colors.primary.main}`
-                    : undefined,
-                  color: HandleMatchPathActive(item.path )
+                  borderRadius: "10px",
+                  mb: 3,
+                  background: HandleMatchPathActive(item.path)
                     ? colors.primary.main
-                    : colors.tertiary.main,
+                    : "transparent",
+                  color: HandleMatchPathActive(item.path)
+                    ? colors.white.main
+                    : colors.primary.main,
+                  "&:hover": {
+                    background:
+                      HandleMatchPathActive(item.path) && colors.primary.main,
+                  },
                 }}
                 onClick={() => handleMenuItemClick(item)}
               >
                 <ListItemButton
                   sx={styles.onHoverBackgroundTransparent}
-                  selected={HandleMatchPathActive(item.path )}
+                  selected={HandleMatchPathActive(item.path)}
                 >
                   <ListItemIcon sx={{ minWidth: "45px" }}>
                     <Icon
-                      width={isSmallScreen ? "20px" : "22px"}
-                      height={isSmallScreen ? "20px" : "22px"}
+                      width={"22px"}
+                      height={"22px"}
                       color={
-                        HandleMatchPathActive(item.path )
-                          ? colors.primary.main
-                          : colors.tertiary.main
+                        HandleMatchPathActive(item.path)
+                          ? colors.white.main
+                          : colors.primary.main
                       }
                     />
                   </ListItemIcon>
-                  <ListItemText
-                    sx={styles.listItemText}
-                    primary={item.title}
-                  />
+                  <ListItemText sx={styles.listItemText} primary={item.title} />
                 </ListItemButton>
               </ListItem>
             </React.Fragment>
           );
         })}
-      </List> */}
+      </List>
     </Stack>
   );
 };

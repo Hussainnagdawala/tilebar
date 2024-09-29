@@ -8,6 +8,8 @@ import { CustomInput } from "../../../common/CustomInput";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { CustomButton } from "../../../common/CustomButton";
+import service from "../../../api/services";
+import { RoutePaths } from "../../../routes/RouterPaths";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -17,12 +19,10 @@ const LoginForm = () => {
       .string()
       .email("Enter a valid email")
       .required("Email is required"),
-    password: yup
-      .string()
-      .required("No password provided.")
-      .min(8, "Password should be of minimum 8 characters length")
-      .required("Password is required")
-      .matches(/(?=.*[0-9])/, "Password must contain a number."),
+    password: yup.string().required("No password provided."),
+    // .min(8, "Password should be of minimum 8 characters length")
+    // .required("Password is required")
+    // .matches(/(?=.*[0-9])/, "Password must contain a number."),
   });
   const formik = useFormik({
     initialValues: {
@@ -35,29 +35,26 @@ const LoginForm = () => {
       handleLogin(values);
     },
   });
+
   const handleLogin = async (values) => {
-    // const validEmail = "admin@gmail.com";
-    // const validPassword = "123";
-    // if (email === validEmail && password === validPassword) {
-    //   toast.success("Login successful!", {
-    //     position: "top-center",
-    //     autoClose: 3000,
-    //   });
-    //   add("admin_token", "token");
-
-    //   setTimeout(() => {
-    //     navigate("/category");
-    //   }, 1300);
-    // } else {
-    //   // Show error message
-    //   toast.error("Invalid credentials", {
-    //     position: "top-center",
-    //     autoClose: 3000,
-    //   });
-    // }
-
-    // setEmail("");
-    // setPassword("");
+    try {
+      const response = await service.auth.login(values);
+      if (response.status === 200) {
+        const data = response?.data?.data;
+        add("admin_token", data.token);
+        add("admin_detail", data.adminDetail);
+        navigate(RoutePaths.categoryPath);
+        toast.success("Login successful!", {
+          autoClose: 2000,
+        });
+      }
+    } catch (error) {
+      if (error?.response?.data?.status === 401) {
+        toast.error("Email or password is incorrect");
+      } else {
+        toast.error(error?.response?.data?.message, { autoClose: 2000 });
+      }
+    }
   };
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -108,9 +105,6 @@ const LoginForm = () => {
           }
         />
         <CustomButton buttonName={"Login"} variant={"contained"} />
-        {/* <button type="submit" className="py-2 px-2 rounded-3 w-100">
-          Log In
-        </button> */}
       </Box>
     </form>
   );

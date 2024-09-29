@@ -7,9 +7,9 @@ export const sidebarStyles = {
     width: drawerWidth,
     flexShrink: 0,
     "& .MuiDrawer-paper": {
-      // background : '#f7f4ed',
+      background : '#f7f4ed',
       // background: "#635d4f",
-      background: colors.primary.main,
+      // background: colors.primary.main,
       width: drawerWidth,
       boxSizing: "border-box",
       border: 0,

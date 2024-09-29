@@ -19,6 +19,11 @@ export const styles = {
       minHeight: "100px",
     },
   },
+  mainListItem: {
+    borderRadius: "10px",
+    mb: 3,
+    background: colors.primary.main,
+  },
   listItem: {
     color: colors.tertiary.main,
     pl: 2,

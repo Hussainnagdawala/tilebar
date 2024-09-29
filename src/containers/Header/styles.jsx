@@ -1,7 +1,5 @@
 import { globalConstant } from "../../constant";
-
 import { appStyles, colors } from "../../theme";
-
 const drawerWidth = "260px";
 
 export const headerStyles = {
@@ -12,8 +10,7 @@ export const headerStyles = {
       ...appStyles.noBoxShadow,
       ...appStyles.borderbottom,
       ...appStyles.borderColorSecondary,
-      background: "#635d4f",
-      color: "#fff",
+      background: "#f7f4ed",
       width: {
         xs: "100%",
         md: fullWidthHeader ? `calc(100% - ${drawerWidth})` : "100%",
@@ -45,7 +42,7 @@ export const headerStyles = {
   },
   profileTitle: {
     ...appStyles.textColorBlack,
-    color: "#fff",
+    // color: "#fff",
     display: { xs: "none", md: "block" },
     fontSize: { xs: ".75rem", md: "initial" },
     lineHeight: { xs: "normal", md: "initial" },
@@ -54,7 +51,7 @@ export const headerStyles = {
     display: { xs: "none", md: "block" },
     fontWeight: 500,
     color: colors.darkGray.main,
-    color: "#fff",
+    // color: "#fff",
     fontSize: { xs: ".75rem", md: "initial" },
     lineHeight: { xs: "normal", md: "initial" },
   },

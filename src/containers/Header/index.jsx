@@ -17,19 +17,12 @@ import React, { useState, useEffect } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { headerStyles } from "./styles";
 import { globalConstant } from "../../constant";
-import { SRSicon } from "../../assets";
 import { useLocalStorage } from "../../hooks";
 import { useNavigate, useLocation } from "react-router-dom";
 import { NavigationLists } from "../../common";
 import { RoutePaths } from "../../routes/RouterPaths";
-// import { logout, useAppDispatch } from "@rtk";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-// import { useGetProfileQuery, useLogutUserMutation } from "@services";
-// import Swal from "sweetalert2";
-// import withReactContent from "sweetalert2-react-content";
-import { toast } from "react-toastify";
-// const MySwal = withReactContent(Swal);
 
 const Index = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -39,11 +32,11 @@ const Index = () => {
   const routepath = location.pathname.split("/")[1];
   const isUserPage = globalConstant.USER === routepath;
   const { clear, load } = useLocalStorage();
-  const userDetails = load("user");
+  const userDetails = load("admin_detail");
   const navigate = useNavigate();
   const [headerTitle, setHeaderTitle] = useState("Overview");
   // const dispatch = useAppDispatch();
-
+  console.log(userDetails);
   useEffect(() => {
     const getActiveTitle = globalConstant.HEADER_ACTIVE_TITLE.find((items) => {
       if (
@@ -79,11 +72,7 @@ const Index = () => {
     navigate(`/user/${globalConstant.PROFILE}`);
   };
 
-  // const renderFirstNameFirstChar = () => {
-  //   return profileDetails?.data?.first_name
-  //     ? profileDetails?.data?.first_name.charAt(0).toUpperCase()
-  //     : "";
-  // };
+
 
   // const handleResetPassword = async () => {
   //   try {
@@ -154,7 +143,7 @@ const Index = () => {
             sx={{
               ...headerStyles.headerTitle,
               display: {
-                color: "#fff",
+                // color: "#fff",
                 md: routepath !== globalConstant.USER ? "block" : "none",
               },
             }}
@@ -166,14 +155,10 @@ const Index = () => {
             <Stack direction={"row"} textAlign={"right"} alignItems={"center"}>
               <Box>
                 <Typography variant="subhead" sx={headerStyles.profileTitle}>
-                  {/* {profileDetails?.data?.first_name +
-                    " " +
-                    profileDetails?.data?.last_name} */}
-                  hhussain
+                  {userDetails?.first_name}
                 </Typography>
                 <Typography variant="subhead" sx={headerStyles.profileSubhead}>
-                  {/* {profileDetails?.data?.email} */}
-                  hussain2
+                  {userDetails?.email}
                 </Typography>
               </Box>
               <Tooltip title="Account settings">
@@ -185,9 +170,10 @@ const Index = () => {
                   aria-haspopup="true"
                   aria-expanded={anchorEl ? "true" : undefined}
                 >
-                  <Avatar sx={{ width: 40, height: 40 }}>
-                    {/* {renderFirstNameFirstChar()} */}
-                  </Avatar>
+                  <Avatar
+                    alt={userDetails?.first_name}
+                    sx={{ width: 40, height: 40 }}
+                  />
                 </IconButton>
               </Tooltip>
             </Stack>
