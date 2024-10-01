@@ -31,7 +31,6 @@ const LoginForm = () => {
     },
     validationSchema: loginValidation,
     onSubmit: (values) => {
-      console.log("values", values);
       handleLogin(values);
     },
   });

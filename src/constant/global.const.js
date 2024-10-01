@@ -1,95 +1,83 @@
 import { RoutePaths } from "../routes/RouterPaths";
-import {
-  OverviewIcon,
-  PatientIcon,
-  ReferralIcon,
-  RedFlagIcon,
-  RejectedIcon,
-  AcceptedIcon,
-  AdminIcon,
-  SettingIcon,
-  HelpCenterIcon,
-  ProfileIcon,
-  PrivacyIcon,
-  LogoutIcon,
-  ResetIcon,
-} from "../assets";
+import WebStoriesIcon from "@mui/icons-material/WebStories";
+import StyleIcon from "@mui/icons-material/Style";
+import WindowRoundedIcon from "@mui/icons-material/WindowRounded";
+import LooksIcon from "@mui/icons-material/Looks";
+import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
+import { SettingIcon, HelpCenterIcon } from "../assets";
 
 export const globalConstant = {
   BASE_URL: process.env.REACT_APP_API_URL,
 
   HEADER_ACTIVE_TITLE: [
     {
-      title: "Overview",
-      path: RoutePaths.categoryPath,
-      isReferral: false,
+      title: "Dashboard",
+      path: RoutePaths.dashboardPath,
     },
     {
-      title: "Referral",
-      isReferral: true,
-    },
-    {
-      title: "Patients",
+      title: "Add Slider",
       path: RoutePaths.patientPath,
-      isReferral: false,
     },
     {
-      title: "Admin",
+      title: "Add Tag",
       path: RoutePaths.adminPath,
-      isReferral: false,
     },
     {
       title: "Setting",
       path: RoutePaths.settingsPath,
-      isReferral: false,
     },
     {
       title: "Help Center",
       path: RoutePaths.helpCenterPath,
-      isReferral: false,
     },
     {
       title: "Profile",
       path: "user",
-      isReferral: false,
     },
   ],
   MENU_LIST: [
     {
-      title: "Category",
-      icon: OverviewIcon,
-      path: RoutePaths.categoryPath,
-      isReferral: false,
+      title: "Dashboard",
+      icon: BarChartRoundedIcon,
+      path: RoutePaths.dashboardPath,
     },
+    // {
+    //   title: "Referral",
+    //   icon: ReferralIcon,
+    //   isReferral: true,
+    //   children: [
+    //     {
+    //       title: "Accepted",
+    //       icon: AcceptedIcon,
+    //       path: RoutePaths.acceptedPath,
+    //     },
+    //     { title: "RedFlag", icon: RedFlagIcon, path: RoutePaths.redFlagPath },
+    //     {
+    //       title: "Rejected",
+    //       icon: RejectedIcon,
+    //       path: RoutePaths.rejectedPath,
+    //     },
+    //   ],
+    // },
     {
-      title: "Referral",
-      icon: ReferralIcon,
-      isReferral: true,
-      children: [
-        {
-          title: "Accepted",
-          icon: AcceptedIcon,
-          path: RoutePaths.acceptedPath,
-        },
-        { title: "RedFlag", icon: RedFlagIcon, path: RoutePaths.redFlagPath },
-        {
-          title: "Rejected",
-          icon: RejectedIcon,
-          path: RoutePaths.rejectedPath,
-        },
-      ],
-    },
-    {
-      title: "Patients",
-      icon: PatientIcon,
+      title: "Add Slider",
+      icon: WebStoriesIcon,
       path: RoutePaths.patientPath,
-      isReferral: false,
     },
     {
-      title: "Admin",
-      icon: AdminIcon,
+      title: "Add Tag",
+      icon: StyleIcon,
       path: RoutePaths.adminPath,
-      isReferral: false,
+    },
+    {
+      title: "Shop By Use",
+      icon: WindowRoundedIcon,
+      path: RoutePaths.adminPath,
+    },
+    {
+      title: "Shop By Look",
+      icon: LooksIcon,
+      path: RoutePaths.adminPath,
     },
   ],
   UTILITY_MENU_LIST: [

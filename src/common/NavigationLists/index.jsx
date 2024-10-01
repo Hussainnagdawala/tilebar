@@ -1,6 +1,5 @@
 import { globalConstant } from "../../constant";
 import {
-  Collapse,
   List,
   ListItem,
   ListItemButton,
@@ -8,11 +7,10 @@ import {
   ListItemText,
   Stack,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { colors } from "../../theme";
 import { styles } from "./style";
 import { useLocation, useMatch, useNavigate } from "react-router-dom";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { useEmpty } from "../../hooks";
 
 export const NavigationLists = ({ handleDrawerToggle }) => {
@@ -23,6 +21,7 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
 
   const HandleMatchPathActive = (href) => {
     const match = useMatch(`${href}/*`);
+
     const isActive = match != null;
     return isActive;
   };
@@ -47,13 +46,6 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
   };
   //ends
 
-  useEffect(() => {
-    const shouldExpendCollapse = globalConstant.REFERRAL_CHILDRENS_PATH;
-    shouldExpendCollapse.includes(pathname)
-      ? setOpenSubMenus(true)
-      : setOpenSubMenus(false);
-  }, []);
-
   return (
     <Stack
       direction={"column"}
@@ -64,7 +56,7 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
         {isValidArray(globalConstant.MENU_LIST) &&
           globalConstant.MENU_LIST.map((item) => {
             const Icon = item.icon;
-            const hasChildren = item.children && item.children.length > 0;
+            // const hasChildren = item.children && item.children.length > 0;
             return (
               <React.Fragment key={item.title}>
                 <ListItem
@@ -96,19 +88,19 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
                       <Icon
                         width="30px"
                         height="30px"
-                        color={
-                          HandleMatchPathActive(item.path)
+                        sx={{
+                          color: HandleMatchPathActive(item.path)
                             ? colors.white.main
-                            : colors.primary.main
-                        }
+                            : colors.primary.main,
+                        }}
                       />
                     </ListItemIcon>
                     <ListItemText primary={item.title} />
-                    {hasChildren &&
-                      (!openSubMenus ? <ExpandMore /> : <ExpandLess />)}
+                    {/* {hasChildren &&
+                      (!openSubMenus ? <ExpandMore /> : <ExpandLess />)} */}
                   </ListItemButton>
                 </ListItem>
-                {hasChildren && (
+                {/* {hasChildren && (
                   <Collapse in={openSubMenus} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding sx={styles.listItem}>
                       {(item.children ?? []).map((subItem) => {
@@ -176,7 +168,7 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
                       })}
                     </List>
                   </Collapse>
-                )}
+                )} */}
               </React.Fragment>
             );
           })}

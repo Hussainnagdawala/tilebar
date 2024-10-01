@@ -35,8 +35,6 @@ const Index = () => {
   const userDetails = load("admin_detail");
   const navigate = useNavigate();
   const [headerTitle, setHeaderTitle] = useState("Overview");
-  // const dispatch = useAppDispatch();
-  console.log(userDetails);
   useEffect(() => {
     const getActiveTitle = globalConstant.HEADER_ACTIVE_TITLE.find((items) => {
       if (

@@ -1,13 +1,7 @@
 import { RoutePaths } from "./RouterPaths";
 import {
   Auth,
-  Category,
   Dashboard,
-  // Admin,
-  // Patients,
-  // Accepted,
-  // RedFlag,
-  // Rejected,
   // Profile,
   // Overview,
   // NotFound
@@ -15,7 +9,7 @@ import {
 
 const {
   loginPath,
-  categoryPath,
+  // categoryPath,
   dashboardPath,
   // adminPath,
   // patientPath,
@@ -34,10 +28,10 @@ const publicRoutes = [
 ];
 
 const privateRoutes = [
-  {
-    path: categoryPath,
-    component: Category,
-  },
+  // {
+  //   path: categoryPath,
+  //   component: Category,
+  // },
   {
     path: dashboardPath,
     component: Dashboard,

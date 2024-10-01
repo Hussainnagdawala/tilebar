@@ -6,7 +6,7 @@ export const colors = {
   },
   secondary: {
     main: "rgba(65, 62, 50, 0.1)",
-    light: "rgba(150, 151, 152, 1)",
+    light: "#f7f4ed",
   },
   tertiary: {
     main: "#4F5B67",

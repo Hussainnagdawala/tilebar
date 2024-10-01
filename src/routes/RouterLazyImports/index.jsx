@@ -4,7 +4,7 @@ import { lazy } from "react";
 const MemberLayout = lazy(() => import("../../Layout/MemberLayout"));
 const VisitorLayout = lazy(() => import("../../Layout/VisitorLayout"));
 const Auth = lazy(() => import("../../Pages/Auth"));
-const Category = lazy(() => import("../../Pages/Dashboard/Dashboard"));
+// const Category = lazy(() => import("../../Pages/Dashboard/Dashboard"));
 const Dashboard = lazy(() => import("../../Pages/Dashboard/Dashboard"));
 // const Accepted = lazy(() => import("../../pages/Accepted"));
 // const RedFlag = lazy(() => import("../../pages/RedFlag"));
@@ -17,7 +17,7 @@ export {
   MemberLayout,
   VisitorLayout,
   Auth,
-  Category,
+  // Category,
   Dashboard,
   // Admin,
   // Patients,

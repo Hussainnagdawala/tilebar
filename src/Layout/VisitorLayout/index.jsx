@@ -10,7 +10,7 @@ const Index = ({ children }) => {
 
   useEffect(() => {
     if (isToken) {
-      navigate(RoutePaths.categoryPath);
+      navigate(RoutePaths.dashboardPath);
     }
   }, [isToken, navigate]);
 
