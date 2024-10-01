@@ -13,9 +13,9 @@ const Interceptor = () => {
         const isLogin =
           config.url?.split("/")[config.url?.split("/").length - 1] === "login";
 
-        if (!isLogin && config.headers) {
-          config.headers.Authorization = `Bearer ${AUTH_TOKEN}`;
-        }
+        // if (!isLogin && config.headers) {
+        //   config.headers.Authorization = `Bearer ${AUTH_TOKEN}`;
+        // }
 
         if (!AUTH_TOKEN) {
           // navigate("/login");

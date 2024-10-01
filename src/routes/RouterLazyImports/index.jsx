@@ -6,6 +6,8 @@ const VisitorLayout = lazy(() => import("../../Layout/VisitorLayout"));
 const Auth = lazy(() => import("../../Pages/Auth"));
 // const Category = lazy(() => import("../../Pages/Dashboard/Dashboard"));
 const Dashboard = lazy(() => import("../../Pages/Dashboard/Dashboard"));
+const ShopByUse = lazy(() => import("../../Pages/ShopByUse"));
+const Sizes = lazy(() => import("../../Pages/Sizes"));
 // const Accepted = lazy(() => import("../../pages/Accepted"));
 // const RedFlag = lazy(() => import("../../pages/RedFlag"));
 // const Rejected = lazy(() => import("../../pages/Rejected"));
@@ -16,8 +18,10 @@ const Dashboard = lazy(() => import("../../Pages/Dashboard/Dashboard"));
 export {
   MemberLayout,
   VisitorLayout,
+  ShopByUse,
   Auth,
   // Category,
+  Sizes,
   Dashboard,
   // Admin,
   // Patients,

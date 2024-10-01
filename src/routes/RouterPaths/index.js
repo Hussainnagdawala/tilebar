@@ -4,6 +4,8 @@ export const RoutePaths = {
   dashboardPath: "/",
   loginPath: "/auth/:activeTab",
   categoryPath: "/category",
+  shopByUsePath: "/shop-by-use",
+  sizesPath: "/sizes",
   // acceptedPath: "/accepted",
   // profilePath: "/profile",
   // userProfilePath: "/user/:path",

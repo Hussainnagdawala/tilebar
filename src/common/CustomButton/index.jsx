@@ -9,6 +9,8 @@ export const CustomButton = ({
   disabled,
   onClick,
   variant,
+  sx={},
+  type = "submit",
 }) => {
   return (
     <>
@@ -17,7 +19,7 @@ export const CustomButton = ({
         variant={variant ?? "contained"}
         fullWidth
         loading={isLoading}
-        type="submit"
+        type={type}
         disabled={disabled}
         sx={{
           ...styles.buttonStyle,

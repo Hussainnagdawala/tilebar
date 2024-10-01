@@ -1,6 +1,7 @@
 export const styles = {
   parentInputBox: {
     mb: { xs: 3, md: 4 },
+    width: "100%",
   },
   textLabel: {
     textTransform: "capitalize",

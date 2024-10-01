@@ -4,7 +4,7 @@ export const styles = {
     borderRadius: "10px",
     minHeight: "45px",
     marginTop: "clamp(.75rem,2vw, 1rem)",
-    fontSize: { xs: "16px", md: "18px" },
+    fontSize: { xs: "16px", md: "16px" },
     fontWeight: 500,
   },
 };

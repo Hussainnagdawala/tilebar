@@ -13,7 +13,7 @@ export const AppModal = ({ handleCloseOpen, open, children, maxWidth }) => {
         aria-describedby="alert-dialog-slide-description"
         sx={{
           "& .MuiPaper-root": {
-            borderRadius: 4,
+            // borderRadius: 4,
           },
         }}
       >

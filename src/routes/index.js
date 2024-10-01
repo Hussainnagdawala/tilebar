@@ -2,6 +2,8 @@ import { RoutePaths } from "./RouterPaths";
 import {
   Auth,
   Dashboard,
+  ShopByUse,
+  Sizes,
   // Profile,
   // Overview,
   // NotFound
@@ -10,14 +12,9 @@ import {
 const {
   loginPath,
   // categoryPath,
+  sizesPath,
   dashboardPath,
-  // adminPath,
-  // patientPath,
-  // acceptedPath,
-  // redFlagPath,
-  // rejectedPath,
-  // userProfilePath,
-  // overViewPath,
+  shopByUsePath,
 } = RoutePaths;
 
 const publicRoutes = [
@@ -35,6 +32,14 @@ const privateRoutes = [
   {
     path: dashboardPath,
     component: Dashboard,
+  },
+  {
+    path: shopByUsePath,
+    component: ShopByUse,
+  },
+  {
+    path: sizesPath,
+    component: Sizes,
   },
   // {
   //   path: acceptedPath,

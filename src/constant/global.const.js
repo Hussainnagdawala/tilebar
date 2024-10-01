@@ -31,6 +31,15 @@ export const globalConstant = {
       path: RoutePaths.helpCenterPath,
     },
     {
+      title: "Shop By Use",
+      path: RoutePaths.shopByUsePath,
+    },
+    {
+      title: "Sizes",
+      path: RoutePaths.sizesPath,
+    },
+
+    {
       title: "Profile",
       path: "user",
     },
@@ -72,7 +81,7 @@ export const globalConstant = {
     {
       title: "Shop By Use",
       icon: WindowRoundedIcon,
-      path: RoutePaths.adminPath,
+      path: RoutePaths.shopByUsePath,
     },
     {
       title: "Shop By Look",
