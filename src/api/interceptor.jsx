@@ -2,20 +2,21 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { AppSpinner } from "../common/AppSpinner";
+import { useLocalStorage } from "../hooks";
 const Interceptor = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
+  const { load } = useLocalStorage();
   useEffect(() => {
     const requestInterceptor = axios.interceptors.request.use(
       (config) => {
-        const AUTH_TOKEN = localStorage.getItem("admin_token");
+        const AUTH_TOKEN = load("admin_token");
         const isLogin =
           config.url?.split("/")[config.url?.split("/").length - 1] === "login";
 
-        // if (!isLogin && config.headers) {
-        //   config.headers.Authorization = `Bearer ${AUTH_TOKEN}`;
-        // }
+        if (!isLogin && config.headers) {
+          config.headers.Authorization = `Bearer ${AUTH_TOKEN}`;
+        }
 
         if (!AUTH_TOKEN) {
           // navigate("/login");

@@ -5,10 +5,18 @@ const BASE_URL = process.env.REACT_APP_API_URL;
 
 const sizesServices = {
   sizelisting: async (data, headers) => {
-    return axios.post(BASE_URL + sizeEndpoints.sizelistAll(), data, { headers });
+    return axios.post(BASE_URL + sizeEndpoints.sizelistAll(), data, {
+      headers,
+    });
   },
   addSize: async (data) => {
     return axios.post(BASE_URL + sizeEndpoints.sizeAdd(), data);
+  },
+  updateSize: async (data) => {
+    return axios.post(BASE_URL + sizeEndpoints.sizeUpdate(), data);
+  },
+  deleteSize: async (data) => {
+    return axios.post(BASE_URL + sizeEndpoints.sizeDelete(), data);
   },
 };
 export default sizesServices;

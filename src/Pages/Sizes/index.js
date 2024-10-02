@@ -1,12 +1,21 @@
 import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { AppModal, CustomButton, CustomInput, CustomTable } from "../../common";
+import {
+  AppModal,
+  AppPagination,
+  CustomButton,
+  CustomInput,
+  CustomTable,
+} from "../../common";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { colors } from "../../theme";
 import { CloseIcon } from "../../assets";
 import service from "../../api/services";
 import { toast } from "react-toastify";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 
 const Index = () => {
   const [sizeModalType, setSizeModalType] = useState({
@@ -14,11 +23,28 @@ const Index = () => {
     isEdit: false,
   });
   const [sizesData, setSizesData] = useState({});
+  console.log("sizesData", sizesData);
+  // columns heading
+  const Sizecolumns = [
+    { name: "#", selector: (row) => row?.index_number ?? 0 },
+    {
+      name: "Title",
+      selector: (row) => row?.title || "",
+    },
+    {
+      name: "Size",
+      selector: (row) => `${row?.size}` || "",
+    },
+    { name: "Action", selector: (row) => row?.action ?? "", center: true },
+  ];
+
+  // formik instance
   const formik = useFormik({
     initialValues: {
       title: "",
       size1: "",
       size2: "",
+      sizeId: "",
     },
     validationSchema: yup.object({
       title: yup.string().required("Title is required"),
@@ -26,10 +52,27 @@ const Index = () => {
       size2: yup.string().required("size is required"),
     }),
     onSubmit: (values) => {
-      handleAddSize(values);
+      if (sizeModalType.isEdit) {
+        handleUpdateSize(values);
+      } else {
+        handleAddSize(values);
+      }
     },
   });
 
+  // get size api handler
+  const handleGetSizeData = async () => {
+    try {
+      const response = await service.sizePage.sizelisting();
+      if (response.status === 200) {
+        setSizesData(response?.data?.data);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, { autoClose: 2000 });
+    }
+  };
+
+  // add size api handler
   const handleAddSize = async (values) => {
     const transformValue = {
       title: values.title,
@@ -42,17 +85,49 @@ const Index = () => {
           autoClose: 2000,
         });
         handleToggleModal();
+        handleGetSizeData()
       }
     } catch (error) {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
     }
   };
 
-  const handleGetSizeData = async () => {
+  // update size api handler
+  const handleUpdateSize = async (values) => {
+    const transformValue = {
+      title: values.title,
+      size: `${values.size1} *${values.size2}`,
+      sizeId: values.sizeId,
+    };
     try {
-      const response = await service.sizePage.sizelisting();
+      const response = await service.sizePage.updateSize(transformValue);
       if (response.status === 200) {
-        setSizesData(response?.data);
+        toast.success(response?.data?.message, {
+          autoClose: 2000,
+        });
+        setSizeModalType({
+          isModalOpen: false,
+          isEdit: false,
+        });
+        handleGetSizeData();
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, { autoClose: 2000 });
+    }
+  };
+
+  // delete size api handler
+  const handleDeleteData = async (data) => {
+    const deletedId = {
+      sizeId: data._id,
+    };
+    try {
+      const response = await service.sizePage.deleteSize(deletedId);
+      if (response.status === 200) {
+        toast.success(response?.data?.message, {
+          autoClose: 2000,
+        });
+        handleGetSizeData();
       }
     } catch (error) {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
@@ -62,39 +137,41 @@ const Index = () => {
   useEffect(() => {
     handleGetSizeData();
   }, []);
-  const acceptedcolumns = [
-    { name: "#", selector: (row) => row?.index_number ?? 0 },
-    {
-      name: "Referral ID",
-      selector: (row) => row?.referral_unique_id || "",
-    },
-    {
-      name: "Patient Full Name",
-      selector: (row) => `${row?.first_name} ${row?.last_name}` || "",
-    },
-    {
-      name: "NHS Number",
-      selector: (row) => row?.nhs_no || "",
-    },
-    { name: "Email", selector: (row) => row?.email || "" },
-    { name: "Service", selector: (row) => row?.pathway_id?.name ?? "N/A" },
-    { name: "Outcome", selector: (row) => row?.outcome || "" },
-    { name: "Action", selector: (row) => row?.action ?? "" },
-  ];
+
+  // toggle modalBox
   const handleToggleModal = () => {
     setSizeModalType((prev) => ({
       ...prev,
       isModalOpen: !sizeModalType.isModalOpen,
     }));
   };
+
+  // edit size data handler
+  const handleEditData = (data) => {
+    const { title, size, _id } = data;
+    const getSize = size.split("*");
+    const [size1, size2] = getSize;
+    formik.setFieldValue("title", title);
+    formik.setFieldValue("size1", size1);
+    formik.setFieldValue("size2", size2);
+    formik.setFieldValue("sizeId", _id);
+
+    setSizeModalType((prev) => ({
+      ...prev,
+      isModalOpen: true,
+      isEdit: true,
+    }));
+  };
+
   return (
     <>
-      <Grid container sx={{ justifyContent: "space-between" }}>
+      <Grid container sx={{ justifyContent: "space-between", mb: 3 }}>
         <Grid item lg={6}>
-          <CustomInput />
+          {/* <CustomInput /> */}
         </Grid>
-        <Grid item lg={2}>
+        <Grid item lg={1.5}>
           <CustomButton
+            startIcon={<AddIcon />}
             type={"button"}
             onClick={handleToggleModal}
             variant={"contained"}
@@ -104,37 +181,58 @@ const Index = () => {
       </Grid>
       <Box>
         <CustomTable
-          // isLoading={isReferralLoading}
-          columns={acceptedcolumns}
-          // data={referralData?.data.map((item, index) => ({
-          //   ...item,
-          //   index_number: index + 1,
-          //   outcome: (
-          //     <Box>
-          //       {/* <TableStatus
-          //         status={item?.outcome === "1" ? 4 : Number(item?.outcome)}
-          //         label={renderOutComeLabelName(item?.outcome)}
-          //       /> */}
-          //     </Box>
-          //   ),
-          //   action: (
-          //     <Box>
-          //       {
-          //         // <CustomDropDownMenu
-          //         //   anchorEl={anchorEls[index]}
-          //         //   open={Boolean(anchorEls[index])}
-          //         //   onClose={() => handleClose(index)}
-          //         //   handleClick={(event) =>
-          //         //     handleClick(event, index)
-          //         //   }
-          //         //   data={item}
-          //         //   menuItem={renderMenuItem}
-          //         // />
-          //       }
-          //     </Box>
-          //   ),
-          // }))}
+          isLoading={!sizesData || !sizesData.list}
+          columns={Sizecolumns}
+          data={
+            sizesData &&
+            sizesData.list &&
+            sizesData?.list.map((item, index) => ({
+              ...item,
+              index_number: index + 1,
+              action: (
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+
+                    gap: 3,
+                  }}
+                >
+                  <IconButton
+                    aria-label="Edit"
+                    color="success"
+                    onClick={() => handleEditData(item)}
+                    sx={{
+                      borderRadius: "10px",
+                      border: `1px solid`,
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="delete"
+                    onClick={() => handleDeleteData(item)}
+                    color="error"
+                    sx={{
+                      borderRadius: "10px",
+                      border: `1px solid ${colors.error.main}`,
+                      color: "#d60000",
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              ),
+            }))
+          }
         />
+
+        {/* <AppPagination
+          currentPage={sizesData?.currentPage}
+          totalCount={sizesData?.total}
+          totalPages={5}
+        /> */}
       </Box>
       {sizeModalType.isModalOpen && (
         <AppModal
@@ -213,11 +311,19 @@ const Index = () => {
                   }
                 />
               </Stack>
-              <CustomButton
-                variant={"contained"}
-                type="submit"
-                buttonName={"Submit"}
-              />
+              {sizeModalType.isEdit ? (
+                <CustomButton
+                  variant={"contained"}
+                  type="submit"
+                  buttonName={"Update"}
+                />
+              ) : (
+                <CustomButton
+                  variant={"contained"}
+                  type="submit"
+                  buttonName={"Submit"}
+                />
+              )}
             </Box>
           </Box>
         </AppModal>

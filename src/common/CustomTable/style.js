@@ -1,3 +1,5 @@
+import { colors } from "../../theme";
+
 export const tableHeadCellStyles = {
   height: "40px",
   fontWeight: 600,
@@ -5,7 +7,7 @@ export const tableHeadCellStyles = {
   fontSize: "14px",
   backgroundColor: "white" /* Solid white background */,
   position: "sticky",
-  borderBottom: "3px solid #159283",
+  borderBottom: `3px solid ${colors.primary.main}`,
   top: 0,
   zIndex: 1,
   "&::after": {
@@ -15,13 +17,13 @@ export const tableHeadCellStyles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(21, 146, 131, 0.05)" /* Semi-transparent overlay */,
+    backgroundColor: colors.secondary.light,
     zIndex: -1,
   },
 };
 
 export const tableCellStyles = {
   fontSize: 14,
-  borderBottom: "2px solid #fff",
+  borderBottom: `2px solid rgba(0,0,0,0.1)`,
   padding: 3,
 };

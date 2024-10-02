@@ -1,16 +1,19 @@
 // import LoadingButton from "@mui/lab/LoadingButton";
+import { colors } from "../../theme";
 import { styles } from "./styles";
 import { Button } from "@mui/material";
 
 export const CustomButton = ({
-  buttonName,
-  buttonColor,
-  isLoading,
-  disabled,
-  onClick,
-  variant,
-  sx={},
+  buttonName = "",
+  buttonColor = colors.primary.main,
+  isLoading = false,
+  disabled = false,
+  onClick = () => {},
+  variant = "contained",
+  sx = {},
   type = "submit",
+  endIcon = null,
+  startIcon = null,
 }) => {
   return (
     <>
@@ -21,6 +24,8 @@ export const CustomButton = ({
         loading={isLoading}
         type={type}
         disabled={disabled}
+        endIcon={endIcon}
+        startIcon={startIcon}
         sx={{
           ...styles.buttonStyle,
           backgroundColor: buttonColor,
