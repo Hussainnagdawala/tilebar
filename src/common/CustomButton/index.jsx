@@ -5,8 +5,9 @@ import { Button } from "@mui/material";
 
 export const CustomButton = ({
   buttonName = "",
-  buttonColor = colors.primary.main,
+  buttonColor = "",
   isLoading = false,
+  color = "primary",
   disabled = false,
   onClick = () => {},
   variant = "contained",
@@ -25,6 +26,7 @@ export const CustomButton = ({
         type={type}
         disabled={disabled}
         endIcon={endIcon}
+        color={color}
         startIcon={startIcon}
         sx={{
           ...styles.buttonStyle,

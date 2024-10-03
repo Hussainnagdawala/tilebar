@@ -6,7 +6,6 @@ import {
   TableHead,
   TableRow,
   Paper,
- 
 } from "@mui/material";
 import { tableHeadCellStyles, tableCellStyles } from "./style";
 // import NoDataFound from "../NoDataFound";
@@ -18,8 +17,9 @@ export const CustomTable = ({ columns, data, isLoading }) => {
           sx={{
             maxHeight: "calc(100dvh - 245px)",
             position: "relative",
+            overflowX: "scroll",
             "::-webkit-scrollbar": {
-              display: "none",
+              // display: "none",
             },
           }}
         >
@@ -33,6 +33,7 @@ export const CustomTable = ({ columns, data, isLoading }) => {
                       sx={{
                         ...tableHeadCellStyles,
                         textAlign: column.center ? "center" : "left",
+                        minWidth: column?.minWidth ? column?.minWidth : "auto",
                       }}
                     >
                       {column.name}

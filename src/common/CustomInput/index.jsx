@@ -26,6 +26,8 @@ export const CustomInput = ({
   startAdornment,
   disabled,
   minDate,
+  multiline = false,
+  rows = 4,
   helperText,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -72,6 +74,8 @@ export const CustomInput = ({
           size="small"
           id={label}
           name={name}
+          rows={rows}
+          multiline={multiline}
           type={showPassword ? "text" : type}
           value={value}
           helperText={error && helperText}

@@ -23,7 +23,7 @@ const Index = () => {
     isEdit: false,
   });
   const [sizesData, setSizesData] = useState({});
-  console.log("sizesData", sizesData);
+
   // columns heading
   const Sizecolumns = [
     { name: "#", selector: (row) => row?.index_number ?? 0 },
@@ -76,7 +76,7 @@ const Index = () => {
   const handleAddSize = async (values) => {
     const transformValue = {
       title: values.title,
-      size: `${values.size1} *${values.size2}`,
+      size: `${values.size1}*${values.size2}`,
     };
     try {
       const response = await service.sizePage.addSize(transformValue);
@@ -85,7 +85,8 @@ const Index = () => {
           autoClose: 2000,
         });
         handleToggleModal();
-        handleGetSizeData()
+        handleGetSizeData();
+        formik.resetForm();
       }
     } catch (error) {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
@@ -96,7 +97,7 @@ const Index = () => {
   const handleUpdateSize = async (values) => {
     const transformValue = {
       title: values.title,
-      size: `${values.size1} *${values.size2}`,
+      size: `${values.size1}*${values.size2}`,
       sizeId: values.sizeId,
     };
     try {
@@ -109,6 +110,7 @@ const Index = () => {
           isModalOpen: false,
           isEdit: false,
         });
+        formik.resetForm();
         handleGetSizeData();
       }
     } catch (error) {
@@ -144,6 +146,7 @@ const Index = () => {
       ...prev,
       isModalOpen: !sizeModalType.isModalOpen,
     }));
+    formik.resetForm();
   };
 
   // edit size data handler
@@ -173,7 +176,12 @@ const Index = () => {
           <CustomButton
             startIcon={<AddIcon />}
             type={"button"}
-            onClick={handleToggleModal}
+            onClick={() =>
+              setSizeModalType((prev) => ({
+                isEdit: false,
+                isModalOpen: true,
+              }))
+            }
             variant={"contained"}
             buttonName={"Add Size"}
           />

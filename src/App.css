@@ -6,7 +6,7 @@
   overflow: hidden;
 }
 /* sidebar_css */
-.navbar {
+/* .navbar {
   background-color: #063d53;
   color: white;
   padding: 10px;
@@ -45,7 +45,7 @@
 
 .sidebar.collapsed {
   width: 48px;
-}
+} */
 
 .menu {
   list-style-type: none;
@@ -132,17 +132,17 @@
 
 /* webkit-scrollbar */
 ::-webkit-scrollbar {
-  width: 1px;
-  height: 5px !important;
+  width: 6px;
+  height: 8px !important;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ffc107;
+  background: #413e3280;
   border-radius: 10px;
 }
 
 /*pages css */
-
+/* 
 tr th {
   border-right: 1px solid gray;
 }
@@ -157,9 +157,9 @@ thead {
 
 tbody {
   white-space: nowrap !important;
-}
+} */
 
-.icon {
+/* .icon {
   font-size: 24px;
   padding: 0 10px;
 }
@@ -167,32 +167,32 @@ tbody {
   background-color: #063d53 !important;
   border: 0px;
   padding: 10px;
-}
+} */
 
-select {
+/* select {
   height: 45px !important;
   margin-top: 6px;
-}
-label {
+} */
+/* label {
   font-weight: 600;
   margin-top: 15px;
-}
-h1 {
+} */
+/* h1 {
   font-size: 28px;
 }
 
 .shadow {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+} */
 
-@media (max-width: 576px) {
+/* @media (max-width: 576px) {
   .sidebar.expanded {
     width: 300px;
   }
-}
+} */
 
 /* login-css */
-.login {
+/* .login {
   margin: 20px auto;
   padding: 40px 50px;
   max-width: 450px;
@@ -300,12 +300,12 @@ h1 {
 h3 {
   font-weight: bold;
   margin: 0;
-}
+} */
 
-h6 {
+/* h6 {
   font-size: 1rem;
   font-weight: 600;
-}
+} */
 
 @media (max-width: 768px) {
   h3 {
