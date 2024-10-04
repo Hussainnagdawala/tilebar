@@ -13,7 +13,7 @@ export const colors = {
     light: "rgba(21, 146, 131, 0.08)",
   },
   darkGray: {
-    main: "#6E6E91",
+    main: "#7a7a7a",
   },
 
   name: {

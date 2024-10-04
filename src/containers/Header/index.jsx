@@ -37,12 +37,7 @@ const Index = () => {
   const [headerTitle, setHeaderTitle] = useState("Overview");
   useEffect(() => {
     const getActiveTitle = globalConstant.HEADER_ACTIVE_TITLE.find((items) => {
-      if (
-        globalConstant.REFERRAL_CHILDRENS_PATH.includes(pathname) &&
-        items.isReferral
-      ) {
-        return items;
-      } else if (items.path === globalConstant.USER) {
+      if (items.path === globalConstant.USER) {
         return items;
       } else {
         return items.path === pathname;
@@ -69,8 +64,6 @@ const Index = () => {
   const handleNavigate = () => {
     navigate(`/user/${globalConstant.PROFILE}`);
   };
-
-
 
   // const handleResetPassword = async () => {
   //   try {

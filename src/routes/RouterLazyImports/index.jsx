@@ -4,15 +4,11 @@ import { lazy } from "react";
 const MemberLayout = lazy(() => import("../../Layout/MemberLayout"));
 const VisitorLayout = lazy(() => import("../../Layout/VisitorLayout"));
 const Auth = lazy(() => import("../../Pages/Auth"));
-// const Category = lazy(() => import("../../Pages/Dashboard/Dashboard"));
 const Dashboard = lazy(() => import("../../Pages/Dashboard/Dashboard"));
 const ShopByUse = lazy(() => import("../../Pages/ShopByUse"));
+const ShopByLook = lazy(() => import("../../Pages/ShopByLook"));
 const Sizes = lazy(() => import("../../Pages/Sizes"));
-// const Accepted = lazy(() => import("../../pages/Accepted"));
-// const RedFlag = lazy(() => import("../../pages/RedFlag"));
-// const Rejected = lazy(() => import("../../pages/Rejected"));
-// const Profile = lazy(() => import("../../pages/Profile"));
-// const Overview = lazy(() => import("../../pages/Overview"));
+const AddSliders = lazy(() => import("../../Pages/AddSliders"));
 // const NotFound = lazy(() => import("../../components/common/PageNotFound"));
 
 export {
@@ -20,15 +16,9 @@ export {
   VisitorLayout,
   ShopByUse,
   Auth,
-  // Category,
+  ShopByLook,
   Sizes,
   Dashboard,
-  // Admin,
-  // Patients,
-  // Accepted,
-  // RedFlag,
-  // Rejected,
-  // Profile,
-  // Overview,
+  AddSliders,
   // NotFound,
 };

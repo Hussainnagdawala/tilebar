@@ -2,8 +2,8 @@ import { colors } from "../../theme";
 
 export const style = {
   textStyle: {
-    fontSize: "14px",
-    lineHeight: "17px",
+    fontSize: "12px",
+    // lineHeight: "17px",
     weight: 600,
   },
 
@@ -40,7 +40,7 @@ export const style = {
     pb: { xs: 2, sm: "24px", md: "24px" },
   },
   select: {
-    borderRadius: "50px",
+    borderRadius: "5px",
     "& .MuiSelect-select": {
       padding: 0,
       px: 3.1,
@@ -59,11 +59,13 @@ export const style = {
       "&.Mui-selected": {
         backgroundColor: colors.primary.main,
         borderColor: colors.primary.main,
+        borderRadius : '5px',
         color: "#fff",
       },
       "&:not(.Mui-selected)": {
-        color: colors.text.tertiary,
-        borderColor: colors.text.tertiary,
+        color:  colors.darkGray.main,
+        borderRadius : '5px',
+        borderColor: colors.darkGray.main,
       },
     },
     "& .MuiPaginationItem-previousNext": {

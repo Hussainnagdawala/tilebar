@@ -29,7 +29,7 @@ import * as yup from "yup";
 import axios from "axios";
 
 const Index = () => {
-  const [shopByUseModalType, setShopByUseModalType] = useState({
+  const [shopByLookModalType, setShopByLookModalType] = useState({
     isModalOpen: false,
     isEdit: false,
   });
@@ -42,7 +42,7 @@ const Index = () => {
     search: "",
     limit: 10,
   });
-  const [shopByUseData, setShopByUseData] = useState({});
+  const [shopByLookData, setShopByLookData] = useState({});
   const [imageData, setImageData] = useState({
     imgUrl: "",
     previewUrl: "",
@@ -72,7 +72,7 @@ const Index = () => {
     },
     {
       name: "Description",
-      minWidth: 250,
+      //   minWidth: 250,
       selector: (row) =>
         (
           <Typography variant="body2" fontSize={12}>
@@ -94,7 +94,7 @@ const Index = () => {
             src={row?.image}
             alt={"shop-by-use-image"}
             width={"150px"}
-            style={{ maxHeight: "220px", objectFit: "cover" }}
+            style={{ maxHeight: "220px", objectFit: "contain" }}
           />
         ) || "",
     },
@@ -129,8 +129,8 @@ const Index = () => {
       description: yup.string().required("description is required"),
     }),
     onSubmit: (values) => {
-      if (shopByUseModalType.isEdit) {
-        handleUpdateShopByUseData(values);
+      if (shopByLookModalType.isEdit) {
+        handleUpdateShopByLookData(values);
       } else {
         handleAddByShopUse(values);
       }
@@ -147,13 +147,15 @@ const Index = () => {
       faq: faq,
     };
     try {
-      const response = await service.shopByUsePage.addShopUse(transformAddData);
+      const response = await service.shopByLookPage.addShopLook(
+        transformAddData
+      );
       const data = response?.data;
       if (data?.status) {
         toast.success(data?.message, { autoClose: 2000 });
         handleToggleModal();
         formik.resetForm();
-        handleGetShopByUseData();
+        handleGetShopByLookData();
       } else {
         toast.error(data?.message, { autoClose: 2000 });
       }
@@ -163,18 +165,18 @@ const Index = () => {
   };
 
   const handleToggleModal = () => {
-    setShopByUseModalType((prev) => ({
+    setShopByLookModalType((prev) => ({
       ...prev,
       isModalOpen: !prev.isModalOpen,
     }));
   };
 
   // function to get the listing of the shop by use data
-  const handleGetShopByUseData = async (queryParams) => {
+  const handleGetShopByLookData = async (queryParams) => {
     try {
-      const response = await service.shopByUsePage.listing(queryParams);
+      const response = await service.shopByLookPage.listing(queryParams);
       if (response.status === 200) {
-        setShopByUseData(response?.data?.data);
+        setShopByLookData(response?.data?.data);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
@@ -183,7 +185,7 @@ const Index = () => {
 
   // useEffect to call the api for the first time during first render
   useEffect(() => {
-    handleGetShopByUseData(queryParams);
+    handleGetShopByLookData(queryParams);
   }, [queryParams]);
 
   // function to handle change in faq
@@ -218,13 +220,13 @@ const Index = () => {
   };
 
   // function to handle Edit of single shop by use data
-  const handleEditShopByUseData = (data) => {
+  const handleEditShopByLookData = (data) => {
     if (data) {
       formik.setFieldValue("title", data.title);
       formik.setFieldValue("name", data.name);
       formik.setFieldValue("description", data.description);
       formik.setFieldValue("id", data._id);
-      setShopByUseModalType({
+      setShopByLookModalType({
         isEdit: true,
         isModalOpen: true,
       });
@@ -237,7 +239,7 @@ const Index = () => {
   };
 
   // function to handle update of single shop by use data
-  const handleUpdateShopByUseData = async (values) => {
+  const handleUpdateShopByLookData = async (values) => {
     const transformAddData = {
       title: values.title,
       shopByUseId: values.id,
@@ -247,7 +249,7 @@ const Index = () => {
       faq: faq,
     };
     try {
-      const response = await service.shopByUsePage.updateShopUse(
+      const response = await service.shopByLookPage.updateShopLook(
         transformAddData
       );
       const data = response?.data;
@@ -255,7 +257,7 @@ const Index = () => {
         toast.success(data?.message, { autoClose: 2000 });
         handleToggleModal();
         formik.resetForm();
-        handleGetShopByUseData();
+        handleGetShopByLookData();
       } else {
         toast.error(data?.message, { autoClose: 2000 });
       }
@@ -265,16 +267,18 @@ const Index = () => {
   };
 
   // function to handle delete data
-  const handleDeleteShopByUseData = async (id) => {
+  const handleDeleteShopByLookData = async (id) => {
     const deletedDataId = {
       shopByUseId: id,
     };
     try {
-      const response = await service.shopByUsePage.removeShopUse(deletedDataId);
+      const response = await service.shopByLookPage.removeShopLook(
+        deletedDataId
+      );
       const data = response?.data;
       if (data?.status) {
         toast.success(data?.message, { autoClose: 2000 });
-        handleGetShopByUseData();
+        handleGetShopByLookData();
         setOpenDeleteModal({ isDeleteModalOpen: false, deleteId: "" });
       } else {
         toast.error(data?.message, { autoClose: 2000 });
@@ -330,8 +334,8 @@ const Index = () => {
   };
 
   const totalPages = useMemo(() => {
-    return Math.round(shopByUseData?.total / 10);
-  }, [shopByUseData?.total]);
+    return Math.round(shopByLookData?.total / 10);
+  }, [shopByLookData?.total]);
 
   const handleOnPageChange = (_event, value) => {
     setQueryParams((prevParams) => ({
@@ -357,17 +361,17 @@ const Index = () => {
             startIcon={<AddIcon />}
             onClick={handleToggleModal}
             variant={"contained"}
-            buttonName={"Add Shop By Use"}
+            buttonName={"Add Shop By Look"}
           />
         </Grid>
       </Grid>
       <Box>
         <CustomTable
-          isLoading={!shopByUseData || !shopByUseData?.category}
+          isLoading={!shopByLookData || !shopByLookData?.category}
           columns={shopByUsecolumns}
           data={
-            isValidArray(shopByUseData?.category) &&
-            shopByUseData?.category.map((item, index) => ({
+            isValidArray(shopByLookData?.category) &&
+            shopByLookData?.category.map((item, index) => ({
               ...item,
               index_number: index + 1,
               faq: (
@@ -410,7 +414,7 @@ const Index = () => {
                   <IconButton
                     aria-label="Edit"
                     color="success"
-                    onClick={() => handleEditShopByUseData(item)}
+                    onClick={() => handleEditShopByLookData(item)}
                     sx={{
                       borderRadius: "10px",
                       border: `1px solid`,
@@ -437,16 +441,16 @@ const Index = () => {
         />
         <AppPagination
           totalPages={totalPages}
-          totalCount={shopByUseData?.total}
+          totalCount={shopByLookData?.total}
           limit={queryParams.limit}
           currentPage={queryParams.page}
           handleLimitChange={handleLimitChange}
           handlePageChange={handleOnPageChange}
         />
       </Box>
-      {shopByUseModalType.isModalOpen && (
+      {shopByLookModalType.isModalOpen && (
         <AppModal
-          open={shopByUseModalType.isModalOpen}
+          open={shopByLookModalType.isModalOpen}
           maxWidth={"sm"}
           handleCloseOpen={handleToggleModal}
         >
@@ -471,9 +475,9 @@ const Index = () => {
                 }}
               >
                 <Typography variant="title">
-                  {shopByUseModalType.isEdit
-                    ? "Edit Shop By Use Details"
-                    : "Add Shop By Use"}
+                  {shopByLookModalType.isEdit
+                    ? "Edit Shop By Look Details"
+                    : "Add Shop By Look"}
                 </Typography>
 
                 <IconButton onClick={handleToggleModal}>
@@ -644,7 +648,7 @@ const Index = () => {
                   );
                 })}
 
-              {shopByUseModalType.isEdit ? (
+              {shopByLookModalType.isEdit ? (
                 <CustomButton
                   variant={"contained"}
                   type="submit"
@@ -699,7 +703,7 @@ const Index = () => {
             </Box>
             <Box px={5} pb={4}>
               <Stack>
-                <Typography variant="body2" color={colors.darkGray.main} py={4}>
+                <Typography variant="body2" sx={{ color: "#7a7a7a" }} py={4}>
                   Once deleted, it will be permanently removed from the system
                   and cannot be recovered. Please confirm your action.
                 </Typography>
@@ -709,7 +713,7 @@ const Index = () => {
                   variant="contained"
                   buttonName="Confirm"
                   onClick={() =>
-                    handleDeleteShopByUseData(openDeleteModal.deleteId)
+                    handleDeleteShopByLookData(openDeleteModal.deleteId)
                   }
                 />
 

@@ -1,17 +1,11 @@
 // the path will be define here
 export const RoutePaths = {
-  // loginPath: "/auth/:activeTab",
   dashboardPath: "/",
   loginPath: "/auth/:activeTab",
   categoryPath: "/category",
   shopByUsePath: "/shop-by-use",
+  shopByLookPath: "/shop-by-look",
   sizesPath: "/sizes",
-  // acceptedPath: "/accepted",
-  // profilePath: "/profile",
-  // userProfilePath: "/user/:path",
-  // redFlagPath: "/redflag",
-  // rejectedPath: "/rejected",
-  // patientPath: "/patients",
-  // settingsPath: "/settings",
-  // helpCenterPath: "/help-center",
+  sliderPath: "/sliderPath",
+ 
 };

@@ -16,29 +16,24 @@ export const globalConstant = {
     },
     {
       title: "Add Slider",
-      path: RoutePaths.patientPath,
+      path: RoutePaths.sliderPath,
     },
     {
       title: "Add Tag",
       path: RoutePaths.adminPath,
     },
     {
-      title: "Setting",
-      path: RoutePaths.settingsPath,
-    },
-    {
-      title: "Help Center",
-      path: RoutePaths.helpCenterPath,
-    },
-    {
       title: "Shop By Use",
       path: RoutePaths.shopByUsePath,
+    },
+    {
+      title: "Shop By Look",
+      path: RoutePaths.shopByLookPath,
     },
     {
       title: "Sizes",
       path: RoutePaths.sizesPath,
     },
-
     {
       title: "Profile",
       path: "user",
@@ -71,7 +66,7 @@ export const globalConstant = {
     {
       title: "Add Slider",
       icon: WebStoriesIcon,
-      path: RoutePaths.patientPath,
+      path: RoutePaths.sliderPath,
     },
     {
       title: "Add Tag",
@@ -86,7 +81,7 @@ export const globalConstant = {
     {
       title: "Shop By Look",
       icon: LooksIcon,
-      path: RoutePaths.adminPath,
+      path: RoutePaths.shopByLookPath,
     },
   ],
   UTILITY_MENU_LIST: [
@@ -110,17 +105,17 @@ export const globalConstant = {
   //   { label: "Incomplete", value: 3 },
   //   { label: "Rejected", value: 4 },
   // ],
-  // TABLE_LIMIT: [
-  //   { label: "10", value: 10 },
-  //   { label: "20", value: 20 },
-  //   { label: "50", value: 50 },
-  //   { label: "100", value: 100 },
-  // ],
-  REFERRAL_CHILDRENS_PATH: [
-    RoutePaths.redFlagPath,
-    RoutePaths.acceptedPath,
-    RoutePaths.rejectedPath,
+  TABLE_LIMIT: [
+    { label: "10", value: 10 },
+    { label: "20", value: 20 },
+    { label: "50", value: 50 },
+    { label: "100", value: 100 },
   ],
+  // REFERRAL_CHILDRENS_PATH: [
+  //   RoutePaths.redFlagPath,
+  //   RoutePaths.acceptedPath,
+  //   RoutePaths.rejectedPath,
+  // ],
   // ACCEPTED_TABS_DATA: [
   //   { name: "Active Referrals", value: 0, status: 3 },
   //   { name: "Closed Referrals", value: 1, status: 2 },

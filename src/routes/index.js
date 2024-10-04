@@ -4,17 +4,18 @@ import {
   Dashboard,
   ShopByUse,
   Sizes,
-  // Profile,
-  // Overview,
+  ShopByLook,
+  AddSliders,
   // NotFound
 } from "./RouterLazyImports";
 
 const {
   loginPath,
-  // categoryPath,
   sizesPath,
   dashboardPath,
   shopByUsePath,
+  shopByLookPath,
+  sliderPath,
 } = RoutePaths;
 
 const publicRoutes = [
@@ -41,26 +42,14 @@ const privateRoutes = [
     path: sizesPath,
     component: Sizes,
   },
-  // {
-  //   path: acceptedPath,
-  //   component: Accepted,
-  // },
-  // {
-  //   path: redFlagPath,
-  //   component: RedFlag,
-  // },
-  // {
-  //   path: rejectedPath,
-  //   component: Rejected,
-  // },
-  // {
-  //   path: userProfilePath,
-  //   component: Profile,
-  // },
-  // {
-  //   path: overViewPath,
-  //   component: Overview,
-  // },
+  {
+    path: shopByLookPath,
+    component: ShopByLook,
+  },
+  {
+    path: sliderPath,
+    component: AddSliders,
+  },
   // {
   //   path: '*',
   //   component: NotFound,

@@ -14,10 +14,10 @@ import { style } from "./style";
 import { globalConstant } from "../../constant";
 
 export const AppPagination = ({
-  totalCount,
-  totalPages,
-  limit,
-  currentPage,
+  totalCount = 0,
+  totalPages = 0,
+  limit = 0,
+  currentPage = 0,
   handlePageChange,
   handleLimitChange,
 }) => {
