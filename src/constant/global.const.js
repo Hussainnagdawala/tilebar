@@ -31,6 +31,10 @@ export const globalConstant = {
       path: RoutePaths.shopByLookPath,
     },
     {
+      title: "Shop By Finish",
+      path: RoutePaths.shopByFinishPath,
+    },
+    {
       title: "Sizes",
       path: RoutePaths.sizesPath,
     },
@@ -82,6 +86,11 @@ export const globalConstant = {
       title: "Shop By Look",
       icon: LooksIcon,
       path: RoutePaths.shopByLookPath,
+    },
+    {
+      title: "Shop By Finish",
+      icon: LooksIcon,
+      path: RoutePaths.shopByFinishPath,
     },
   ],
   UTILITY_MENU_LIST: [
@@ -145,4 +154,7 @@ export const globalConstant = {
   PRIVACY_POLICY_TAB: "Privacy Policy",
   FilterTitleServices: "Services",
   FilterTitleSortDate: "Sort Date",
+  InitialFaqData: [{ question: "", answer: "" }],
+  InitialImageData: { imgUrl: "", previewUrl: "" },
+  InitialModalStateData: { isEdit: false, isModalOpen: false },
 };

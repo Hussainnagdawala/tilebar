@@ -4,6 +4,7 @@ import ShopByUseEndpoints from "./shopByUse";
 import sizeEndpoints from "./sizes";
 import ShopByLookEndpoints from "./shopByLook";
 import BannerSliderEndPoints from "./bannerSlider";
+import ShopByFinishEndpoints from "./shopByFinish";
 
 const dictionary = {
   auth,
@@ -12,5 +13,6 @@ const dictionary = {
   sizeEndpoints,
   ShopByLookEndpoints,
   BannerSliderEndPoints,
+  ShopByFinishEndpoints,
 };
 export default dictionary;

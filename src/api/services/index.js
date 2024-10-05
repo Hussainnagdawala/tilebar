@@ -3,9 +3,9 @@ import contactPage from "./contactPage";
 import sizePage from "./sizePage";
 import shopByUsePage from "./shopByUsePage";
 import shopByLookPage from "./shopByLookPage";
+import shopByFinishPage from "./shopByFinishPage";
 import bannerSliderPage from "./bannerSliderPage";
 import imageUploaderService from "./imageUploader";
-
 
 const service = {
   auth: authService,
@@ -13,7 +13,8 @@ const service = {
   sizePage: sizePage,
   shopByUsePage: shopByUsePage,
   shopByLookPage: shopByLookPage,
+  shopByFinishPage: shopByFinishPage,
   bannerSliderPage: bannerSliderPage,
-  imageUploaderService : imageUploaderService
+  imageUploaderService: imageUploaderService,
 };
 export default service;
