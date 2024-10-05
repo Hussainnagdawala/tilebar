@@ -1,7 +1,7 @@
 import {
   Box,
   Button,
-  Grid2,
+  Grid,
   IconButton,
   ImageList,
   ImageListItem,
@@ -160,11 +160,11 @@ const Index = () => {
   };
   return (
     <>
-      <Grid2
+      <Grid
         container
         sx={{ justifyContent: "space-between", alignItems: "center", mb: 3 }}
       >
-        <Grid2 item lg={6}>
+        <Grid item lg={6}>
           <Typography variant="h6" color={colors.primary.main}>
             Upload and organize slider images
           </Typography>
@@ -172,8 +172,8 @@ const Index = () => {
             These images will appear in the main banner on the website.
           </Typography>
           {/* <CustomInput /> */}
-        </Grid2>
-        <Grid2 item lg={1.5}>
+        </Grid>
+        <Grid item lg={1.5}>
           <CustomButton
             startIcon={<AddIcon />}
             type={"button"}
@@ -186,8 +186,8 @@ const Index = () => {
             variant={"contained"}
             buttonName={"Add Slider"}
           />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       <ImageList sx={sliderStyles.sliderStyles} cols={2} gap={20}>
         {isValidArray(bannerData) &&
           bannerData.map((item) => (
@@ -244,8 +244,8 @@ const Index = () => {
                 </IconButton>
               </Box>
             </Box>
-            <Grid2 container px={5} py={5}>
-              <Grid2 item xs={12}>
+            <Grid px={5} py={5}>
+              <Grid item xs={12}>
                 {!selectedimageData.previewUrl ? (
                   <Button
                     component="label"
@@ -348,8 +348,8 @@ const Index = () => {
                     Please Upload the Image{" "}
                   </Typography>
                 )}
-              </Grid2>
-            </Grid2>
+              </Grid>
+            </Grid>
           </Box>
         </AppModal>
       )}

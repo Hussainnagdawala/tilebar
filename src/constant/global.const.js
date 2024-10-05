@@ -31,6 +31,10 @@ export const globalConstant = {
       path: RoutePaths.shopByLookPath,
     },
     {
+      title: "Shop By Color",
+      path: RoutePaths.shopByColorPath,
+    },
+    {
       title: "Sizes",
       path: RoutePaths.sizesPath,
     },
@@ -69,6 +73,11 @@ export const globalConstant = {
       path: RoutePaths.sliderPath,
     },
     {
+      title: "Add Size",
+      icon: WebStoriesIcon,
+      path: RoutePaths.sizesPath,
+    },
+    {
       title: "Add Tag",
       icon: StyleIcon,
       path: RoutePaths.adminPath,
@@ -82,6 +91,11 @@ export const globalConstant = {
       title: "Shop By Look",
       icon: LooksIcon,
       path: RoutePaths.shopByLookPath,
+    },
+    {
+      title: "Shop By Color",
+      icon: LooksIcon,
+      path: RoutePaths.shopByColorPath,
     },
   ],
   UTILITY_MENU_LIST: [
@@ -99,33 +113,13 @@ export const globalConstant = {
     },
   ],
   IS_AUTH_SCREEN: "auth",
-  // REFERRAL_STATUS: [
-  //   { label: "Submitted", value: 1 },
-  //   { label: "Accepted", value: 2 },
-  //   { label: "Incomplete", value: 3 },
-  //   { label: "Rejected", value: 4 },
-  // ],
+
   TABLE_LIMIT: [
     { label: "10", value: 10 },
     { label: "20", value: 20 },
     { label: "50", value: 50 },
     { label: "100", value: 100 },
   ],
-  // REFERRAL_CHILDRENS_PATH: [
-  //   RoutePaths.redFlagPath,
-  //   RoutePaths.acceptedPath,
-  //   RoutePaths.rejectedPath,
-  // ],
-  // ACCEPTED_TABS_DATA: [
-  //   { name: "Active Referrals", value: 0, status: 3 },
-  //   { name: "Closed Referrals", value: 1, status: 2 },
-  // ],
-  // PROFILE_LIST_ITEM: [
-  //   { name: "My Profile", icon: ProfileIcon, pathname: "profile" },
-  //   { name: "Reset Password", icon: ResetIcon, pathname: "resetpassword" },
-  //   { name: "Privacy Policy", icon: PrivacyIcon, pathname: "privacypolicy" },
-  //   { name: "Logout", icon: LogoutIcon },
-  // ],
   LOGOUT: "Logout",
   PROFILE: "profile",
   CHANGE_EMAIL: "changeEmail",

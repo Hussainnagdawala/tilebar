@@ -7,6 +7,7 @@ const Auth = lazy(() => import("../../Pages/Auth"));
 const Dashboard = lazy(() => import("../../Pages/Dashboard/Dashboard"));
 const ShopByUse = lazy(() => import("../../Pages/ShopByUse"));
 const ShopByLook = lazy(() => import("../../Pages/ShopByLook"));
+const ShopByColor = lazy(() => import("../../Pages/ShopByColor"));
 const Sizes = lazy(() => import("../../Pages/Sizes"));
 const AddSliders = lazy(() => import("../../Pages/AddSliders"));
 // const NotFound = lazy(() => import("../../components/common/PageNotFound"));
@@ -20,5 +21,6 @@ export {
   Sizes,
   Dashboard,
   AddSliders,
+  ShopByColor,
   // NotFound,
 };

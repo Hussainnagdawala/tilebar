@@ -5,7 +5,7 @@ export const RoutePaths = {
   categoryPath: "/category",
   shopByUsePath: "/shop-by-use",
   shopByLookPath: "/shop-by-look",
+  shopByColorPath: "/shop-by-color",
   sizesPath: "/sizes",
   sliderPath: "/sliderPath",
- 
 };

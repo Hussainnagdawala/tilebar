@@ -3,9 +3,9 @@ import contactPage from "./contactPage";
 import sizePage from "./sizePage";
 import shopByUsePage from "./shopByUsePage";
 import shopByLookPage from "./shopByLookPage";
+import shopByColorPage from "./shopByColorPage";
 import bannerSliderPage from "./bannerSliderPage";
 import imageUploaderService from "./imageUploader";
-
 
 const service = {
   auth: authService,
@@ -14,6 +14,7 @@ const service = {
   shopByUsePage: shopByUsePage,
   shopByLookPage: shopByLookPage,
   bannerSliderPage: bannerSliderPage,
-  imageUploaderService : imageUploaderService
+  imageUploaderService: imageUploaderService,
+  shopByColorServices: shopByColorPage,
 };
 export default service;
