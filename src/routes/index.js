@@ -7,6 +7,7 @@ import {
   ShopByLook,
   AddSliders,
   ShopByFinish,
+  ShopByColor,
   // NotFound
 } from "./RouterLazyImports";
 
@@ -18,6 +19,7 @@ const {
   shopByLookPath,
   sliderPath,
   shopByFinishPath,
+  shopByColorPath,
 } = RoutePaths;
 
 const publicRoutes = [
@@ -55,6 +57,10 @@ const privateRoutes = [
   {
     path: shopByFinishPath,
     component: ShopByFinish,
+  },
+  {
+    path: shopByColorPath,
+    component: ShopByColor,
   },
   // {
   //   path: '*',

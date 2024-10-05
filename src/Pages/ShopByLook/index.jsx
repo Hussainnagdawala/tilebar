@@ -334,7 +334,7 @@ const Index = () => {
   };
 
   const totalPages = useMemo(() => {
-    return Math.round(shopByLookData?.total / 10);
+    return Math.ceil(shopByLookData?.total / 10);
   }, [shopByLookData?.total]);
 
   const handleOnPageChange = (_event, value) => {

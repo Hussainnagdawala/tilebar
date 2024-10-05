@@ -29,7 +29,7 @@ import * as yup from "yup";
 import axios from "axios";
 
 const Index = () => {
-  const [shopByUseModalType, setShopByUseModalType] = useState({
+  const [shopByColorModalType, setShopByColorModalType] = useState({
     isModalOpen: false,
     isEdit: false,
   });
@@ -42,21 +42,16 @@ const Index = () => {
     search: "",
     limit: 10,
   });
-  const [shopByUseData, setShopByUseData] = useState({});
+  const [shopByColorData, setShopByColorData] = useState({});
   const [imageData, setImageData] = useState({
     imgUrl: "",
     previewUrl: "",
   });
   const { isValidArray } = useEmpty();
-  const [faq, setFaq] = useState([{ question: "", answer: "" }]);
 
   // table data columns
-  const shopByUsecolumns = [
+  const shopByColorcolumns = [
     { name: "#", selector: (row) => row?.index_number ?? 0 },
-    {
-      name: "Name",
-      selector: (row) => row?.name || "",
-    },
     {
       name: "Title",
       selector: (row) =>
@@ -72,7 +67,6 @@ const Index = () => {
     },
     {
       name: "Description",
-      minWidth: 250,
       selector: (row) =>
         (
           <Typography variant="body2" fontSize={12}>
@@ -81,12 +75,7 @@ const Index = () => {
         ) || "",
     },
     {
-      name: "FAQ's",
-      minWidth: 250,
-      selector: (row) => row?.faq || "",
-    },
-    {
-      name: "image",
+      name: "Image",
 
       selector: (row) =>
         (
@@ -94,7 +83,7 @@ const Index = () => {
             src={row?.image}
             alt={"shop-by-use-image"}
             width={"150px"}
-            style={{ maxHeight: "220px", objectFit: "cover" }}
+            style={{ maxHeight: "220px", objectFit: "contain" }}
           />
         ) || "",
     },
@@ -120,40 +109,39 @@ const Index = () => {
       title: "",
       description: "",
       image: "",
-      name: "",
       id: "",
     },
     validationSchema: yup.object({
       title: yup.string().required("title is required"),
-      name: yup.string().required("name is required"),
       description: yup.string().required("description is required"),
     }),
     onSubmit: (values) => {
-      if (shopByUseModalType.isEdit) {
-        handleUpdateShopByUseData(values);
+      if (shopByColorModalType.isEdit) {
+        handleUpdateShopByColorData(values);
       } else {
-        handleAddByShopUse(values);
+        handleAddByShopColor(values);
       }
     },
   });
 
   // function to Add shop by use data
-  const handleAddByShopUse = async (values) => {
+  const handleAddByShopColor = async (values) => {
     const transformAddData = {
       title: values.title,
       description: values.description,
       image: imageData.imgUrl,
       name: values.name,
-      faq: faq,
     };
     try {
-      const response = await service.shopByUsePage.addShopUse(transformAddData);
+      const response = await service.shopByColorServices.addShopColor(
+        transformAddData
+      );
       const data = response?.data;
       if (data?.status) {
         toast.success(data?.message, { autoClose: 2000 });
         handleToggleModal();
         formik.resetForm();
-        handleGetShopByUseData();
+        handleGetShopByColorData();
       } else {
         toast.error(data?.message, { autoClose: 2000 });
       }
@@ -163,18 +151,30 @@ const Index = () => {
   };
 
   const handleToggleModal = () => {
-    setShopByUseModalType((prev) => ({
-      ...prev,
-      isModalOpen: !prev.isModalOpen,
-    }));
+    if (shopByColorModalType.isModalOpen) {
+      setShopByColorModalType((prev) => ({
+        isEdit: false,
+        isModalOpen: false,
+      }));
+      formik.resetForm();
+      setImageData({
+        imgUrl: "",
+        previewUrl: "",
+      });
+    } else {
+      setShopByColorModalType((prev) => ({
+        ...prev,
+        isModalOpen: !prev.isModalOpen,
+      }));
+    }
   };
 
   // function to get the listing of the shop by use data
-  const handleGetShopByUseData = async (queryParams) => {
+  const handleGetShopByColorData = async (queryParams) => {
     try {
-      const response = await service.shopByUsePage.listing(queryParams);
+      const response = await service.shopByColorServices.listing(queryParams);
       if (response.status === 200) {
-        setShopByUseData(response?.data?.data);
+        setShopByColorData(response?.data?.data);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
@@ -183,52 +183,20 @@ const Index = () => {
 
   // useEffect to call the api for the first time during first render
   useEffect(() => {
-    handleGetShopByUseData(queryParams);
+    handleGetShopByColorData(queryParams);
   }, [queryParams]);
 
-  // function to handle change in faq
-  const handleFaqChange = (e, type, index) => {
-    const value = e.target.value;
-    if (type === "question") {
-      const newFaq = [...faq];
-      newFaq[index] = {
-        ...newFaq[index],
-        question: value,
-      };
-      setFaq(newFaq);
-    } else {
-      const newFaq = [...faq];
-      newFaq[index] = {
-        ...newFaq[index],
-        answer: value,
-      };
-      setFaq(newFaq);
-    }
-  };
-
-  // function to add the faq
-  const handleAddFaq = () => {
-    setFaq((prev) => [...prev, { question: "", answer: "" }]);
-  };
-
-  // function to delete the faq
-  const handleDeleteFaq = (faqIndex) => {
-    const newFaqData = faq.filter((_, idx) => idx !== faqIndex);
-    setFaq(newFaqData);
-  };
-
   // function to handle Edit of single shop by use data
-  const handleEditShopByUseData = (data) => {
+  const handleEditShopByColorData = (data) => {
     if (data) {
       formik.setFieldValue("title", data.title);
       formik.setFieldValue("name", data.name);
       formik.setFieldValue("description", data.description);
       formik.setFieldValue("id", data._id);
-      setShopByUseModalType({
+      setShopByColorModalType({
         isEdit: true,
         isModalOpen: true,
       });
-      setFaq(data.faq);
       setImageData({
         imgUrl: data.image,
         previewUrl: data.image,
@@ -237,17 +205,15 @@ const Index = () => {
   };
 
   // function to handle update of single shop by use data
-  const handleUpdateShopByUseData = async (values) => {
+  const handleUpdateShopByColorData = async (values) => {
     const transformAddData = {
       title: values.title,
-      shopByUseId: values.id,
+      colorId: values.id,
       description: values.description,
       image: imageData.imgUrl,
-      name: values.name,
-      faq: faq,
     };
     try {
-      const response = await service.shopByUsePage.updateShopUse(
+      const response = await service.shopByColorServices.updateShopColor(
         transformAddData
       );
       const data = response?.data;
@@ -255,7 +221,7 @@ const Index = () => {
         toast.success(data?.message, { autoClose: 2000 });
         handleToggleModal();
         formik.resetForm();
-        handleGetShopByUseData();
+        handleGetShopByColorData();
       } else {
         toast.error(data?.message, { autoClose: 2000 });
       }
@@ -265,16 +231,18 @@ const Index = () => {
   };
 
   // function to handle delete data
-  const handleDeleteShopByUseData = async (id) => {
+  const handleDeleteShopByColorData = async (id) => {
     const deletedDataId = {
-      shopByUseId: id,
+      colorId: id,
     };
     try {
-      const response = await service.shopByUsePage.removeShopUse(deletedDataId);
+      const response = await service.shopByColorServices.removeShopColor(
+        deletedDataId
+      );
       const data = response?.data;
       if (data?.status) {
         toast.success(data?.message, { autoClose: 2000 });
-        handleGetShopByUseData();
+        handleGetShopByColorData();
         setOpenDeleteModal({ isDeleteModalOpen: false, deleteId: "" });
       } else {
         toast.error(data?.message, { autoClose: 2000 });
@@ -296,11 +264,7 @@ const Index = () => {
       const formData = new FormData();
       formData.append("image", file);
       try {
-        const res = await axios.post(
-          "https://api.betterbeout.com/api/v1/image/uploader",
-          formData
-        );
-
+        const res = await service.imageUploaderService.uploadImage(formData);
         if (res.data && res.data.url) {
           setImageData((prev) => ({
             ...prev,
@@ -329,10 +293,10 @@ const Index = () => {
     });
   };
 
+  // pagination handler function
   const totalPages = useMemo(() => {
-    return Math.ceil(shopByUseData?.total / 10);
-  }, [shopByUseData?.total]);
-
+    return Math.ceil(shopByColorData?.total / 10);
+  }, [shopByColorData?.total]);
   const handleOnPageChange = (_event, value) => {
     setQueryParams((prevParams) => ({
       ...prevParams,
@@ -357,52 +321,24 @@ const Index = () => {
             startIcon={<AddIcon />}
             onClick={handleToggleModal}
             variant={"contained"}
-            buttonName={"Add Shop By Use"}
+            buttonName={"Add Shop By Color"}
           />
         </Grid>
       </Grid>
       <Box>
         <CustomTable
-          isLoading={!shopByUseData || !shopByUseData?.category}
-          columns={shopByUsecolumns}
+          isLoading={!shopByColorData || !shopByColorData?.category}
+          columns={shopByColorcolumns}
           data={
-            isValidArray(shopByUseData?.category) &&
-            shopByUseData?.category.map((item, index) => ({
+            isValidArray(shopByColorData?.category) &&
+            shopByColorData?.category.map((item, index) => ({
               ...item,
               index_number: index + 1,
-              faq: (
-                <Box>
-                  {isValidArray(item?.faq) &&
-                    item?.faq.map((faqItem, idx) => {
-                      return (
-                        <React.Fragment key={idx}>
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              fontSize: ".9rem",
-                            }}
-                          >
-                            Question : {faqItem?.question}
-                          </Typography>
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              fontSize: ".8rem",
-                            }}
-                          >
-                            Answer : {faqItem?.answer}
-                          </Typography>
-                        </React.Fragment>
-                      );
-                    })}
-                </Box>
-              ),
               action: (
                 <Box
                   sx={{
                     width: "100%",
                     display: "flex",
-                    justifyContent: "center",
 
                     gap: 3,
                   }}
@@ -410,7 +346,7 @@ const Index = () => {
                   <IconButton
                     aria-label="Edit"
                     color="success"
-                    onClick={() => handleEditShopByUseData(item)}
+                    onClick={() => handleEditShopByColorData(item)}
                     sx={{
                       borderRadius: "10px",
                       border: `1px solid`,
@@ -437,16 +373,16 @@ const Index = () => {
         />
         <AppPagination
           totalPages={totalPages}
-          totalCount={shopByUseData?.total}
+          totalCount={shopByColorData?.total}
           limit={queryParams.limit}
           currentPage={queryParams.page}
           handleLimitChange={handleLimitChange}
           handlePageChange={handleOnPageChange}
         />
       </Box>
-      {shopByUseModalType.isModalOpen && (
+      {shopByColorModalType.isModalOpen && (
         <AppModal
-          open={shopByUseModalType.isModalOpen}
+          open={shopByColorModalType.isModalOpen}
           maxWidth={"sm"}
           handleCloseOpen={handleToggleModal}
         >
@@ -471,9 +407,9 @@ const Index = () => {
                 }}
               >
                 <Typography variant="title">
-                  {shopByUseModalType.isEdit
-                    ? "Edit Shop By Use Details"
-                    : "Add Shop By Use"}
+                  {shopByColorModalType.isEdit
+                    ? "Edit Shop By Color Details"
+                    : "Add Shop By Color"}
                 </Typography>
 
                 <IconButton onClick={handleToggleModal}>
@@ -482,16 +418,6 @@ const Index = () => {
               </Box>
             </Box>
             <Box p={5} component={"form"} onSubmit={formik.handleSubmit}>
-              <CustomInput
-                name={"name"}
-                label={"Name"}
-                handleChange={formik.handleChange}
-                placeholder={"enter name of your category"}
-                value={formik.values.name}
-                type={"text"}
-                error={formik.errors.name}
-                helperText={Boolean(formik.touched.name) && formik.errors.name}
-              />
               <CustomInput
                 name={"title"}
                 label={"Title"}
@@ -591,60 +517,7 @@ const Index = () => {
                   </Grid>
                 </Grid>
               </Box>
-              <Stack direction={"row"} justifyContent={"space-between"}>
-                <Typography variant="h6" mb={4}>
-                  Enter The FAQ's{" "}
-                </Typography>
-                <Button
-                  variant="contained"
-                  onClick={handleAddFaq}
-                  sx={{ textTransform: "capitalize" }}
-                >
-                  Add FAQ's
-                </Button>
-              </Stack>
-              {isValidArray(faq) &&
-                faq.map((data, idx) => {
-                  return (
-                    <Stack direction={"row"} gap={3} alignItems={"center"}>
-                      <CustomInput
-                        name={"question"}
-                        label={"Question"}
-                        handleChange={(e) =>
-                          handleFaqChange(e, "question", idx)
-                        }
-                        placeholder={"Enter question"}
-                        value={data.question}
-                        type={"text"}
-                      />
-                      <CustomInput
-                        name={"answer"}
-                        label={"Answer"}
-                        handleChange={(e) => handleFaqChange(e, "answer", idx)}
-                        placeholder={"Enter answer"}
-                        value={data.answer}
-                        type={"text"}
-                      />
-                      {faq.length >= 2 && (
-                        <IconButton
-                          color="error"
-                          onClick={() => handleDeleteFaq(idx)}
-                          sx={{
-                            mt: 4,
-                            color: colors.primary.main,
-                            borderRadius: "10px",
-                            border: "1px solid",
-                            minHeight: "45px",
-                          }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      )}
-                    </Stack>
-                  );
-                })}
-
-              {shopByUseModalType.isEdit ? (
+              {shopByColorModalType.isEdit ? (
                 <CustomButton
                   variant={"contained"}
                   type="submit"
@@ -699,7 +572,7 @@ const Index = () => {
             </Box>
             <Box px={5} pb={4}>
               <Stack>
-                <Typography variant="body2" color={colors.darkGray.main} py={4}>
+                <Typography variant="body2" sx={{ color: "#7a7a7a" }} py={4}>
                   Once deleted, it will be permanently removed from the system
                   and cannot be recovered. Please confirm your action.
                 </Typography>
@@ -709,7 +582,7 @@ const Index = () => {
                   variant="contained"
                   buttonName="Confirm"
                   onClick={() =>
-                    handleDeleteShopByUseData(openDeleteModal.deleteId)
+                    handleDeleteShopByColorData(openDeleteModal.deleteId)
                   }
                 />
 
