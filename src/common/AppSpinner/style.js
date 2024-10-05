@@ -8,7 +8,7 @@ export const style = {
     top: 0,
     left: 0,
     width: "100%",
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    zIndex: 20000
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    zIndex: 20000,
   },
 };

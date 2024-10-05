@@ -33,7 +33,7 @@ export const CustomTable = ({ columns, data, isLoading }) => {
                       sx={{
                         ...tableHeadCellStyles,
                         textAlign: column.center ? "center" : "left",
-                        minWidth: column?.minWidth ? column?.minWidth : "auto",
+                        maxWidth: "400px",
                       }}
                     >
                       {column.name}
@@ -52,6 +52,11 @@ export const CustomTable = ({ columns, data, isLoading }) => {
                           sx={{
                             ...tableCellStyles,
                             textAlign: column.center ? "center" : "left",
+                            maxHeight: "50px", // Limit height as per your requirement
+                            maxWidth: "400px",
+                            whiteSpace: "nowrap", // Prevent text from wrapping
+                            overflow: "hidden", // Hide overflowed text
+                            textOverflow: "ellipsis", // Show
                           }}
                         >
                           {column.selector(row)}

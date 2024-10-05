@@ -15,32 +15,67 @@ import {
   CustomInput,
   CustomTable,
 } from "../../common";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { colors } from "../../theme";
-import { CloseIcon } from "../../assets";
-import service from "../../api/services";
-import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
-import { toast } from "react-toastify";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
+import service from "../../api/services";
+import { toast } from "react-toastify";
+import { useEmpty } from "../../hooks";
+import { CloseIcon } from "../../assets";
+import { colors } from "../../theme";
+import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import axios from "axios";
 import { globalConstant } from "../../constant";
 
 const Index = () => {
-  const [sizeModalType, setSizeModalType] = useState({
-    isModalOpen: false,
-    isEdit: false,
-  });
-  const [sizesData, setSizesData] = useState({});
+  const [categoryModalType, setCategoryModalType] = useState(
+    globalConstant.InitialModalStateData
+  );
   const [openDeleteModal, setOpenDeleteModal] = useState({
     isDeleteModalOpen: false,
     deleteId: "",
   });
-  const [queryParams, setQueryParams] = useState(
-    globalConstant.InitialQueryParamData
-  );
-  const [imageData, setImageData] = useState(globalConstant.InitialImageData);
+  const [queryParams, setQueryParams] = useState({
+    page: 1,
+    search: "",
+    limit: 10,
+  });
+  const [categoryData, setCategoryData] = useState({});
+  const [imageData, setImageData] = useState({
+    imgUrl: "",
+    previewUrl: "",
+  });
+  const { isValidArray } = useEmpty();
+
+  // table data columns
+  const categorycolumns = [
+    { name: "#", selector: (row) => row?.index_number ?? 0 },
+    {
+      name: "Title",
+      selector: (row) => row?.title || "",
+    },
+    {
+      name: "Description",
+      selector: (row) => row?.description || "",
+    },
+    {
+      name: "Image",
+
+      selector: (row) =>
+        (
+          <img
+            src={row?.image}
+            alt={"shop-by-use-image"}
+            width={"150px"}
+            style={{ maxHeight: "220px", objectFit: "contain" }}
+          />
+        ) || "",
+    },
+    { name: "Action", selector: (row) => row?.action ?? "" },
+  ];
+
   // file button input style
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -54,173 +89,145 @@ const Index = () => {
     width: 1,
   });
 
-  // columns heading
-  const Sizecolumns = [
-    { name: "#", selector: (row) => row?.index_number ?? 0 },
-    {
-      name: "Title",
-      selector: (row) => row?.title || "",
-    },
-    {
-      name: "Size",
-      selector: (row) => `${row?.size}` || "",
-    },
-    {
-      name: "Image",
-
-      selector: (row) =>
-        (
-          <img
-            src={row?.image}
-            alt={"shop-by-use-image"}
-            width={"150px"}
-            style={{ maxHeight: "80px", objectFit: "contain" }}
-          />
-        ) || "",
-    },
-    { name: "Action", selector: (row) => row?.action ?? "", center: true },
-  ];
-
-  // formik instance
+  // formik configuration
   const formik = useFormik({
     initialValues: {
       title: "",
-      size1: "",
-      size2: "",
-      sizeId: "",
+      description: "",
+      image: "",
+      id: "",
     },
     validationSchema: yup.object({
-      title: yup.string().required("Title is required"),
-      size1: yup.string().required("size is required"),
-      size2: yup.string().required("size is required"),
+      title: yup.string().required("title is required"),
+      description: yup.string().required("description is required"),
     }),
     onSubmit: (values) => {
-      if (sizeModalType.isEdit) {
-        handleUpdateSize(values);
+      if (categoryModalType.isEdit) {
+        handleUpdateCategoryData(values);
       } else {
-        handleAddSize(values);
+        handleAddCategory(values);
       }
     },
   });
 
-  // get size api handler
-  const handleGetSizeData = async () => {
-    try {
-      const response = await service.sizePage.sizelisting();
-      if (response.status === 200) {
-        setSizesData(response?.data?.data);
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message, { autoClose: 2000 });
-    }
-  };
-
-  // add size api handler
-  const handleAddSize = async (values) => {
-    const transformValue = {
+  // function to Add shop by use data
+  const handleAddCategory = async (values) => {
+    const transformAddData = {
       title: values.title,
-      size: `${values.size1}*${values.size2}`,
+      description: values.description,
       image: imageData.imgUrl,
+      name: values.name,
     };
     try {
-      const response = await service.sizePage.addSize(transformValue);
-      if (response.status === 200) {
-        toast.success("Size Added successfully", {
-          autoClose: 2000,
-        });
+      const response = await service.categoryPage.addCategory(transformAddData);
+      const data = response?.data;
+      if (data?.status) {
+        toast.success(data?.message, { autoClose: 2000 });
         handleToggleModal();
-        handleGetSizeData();
-        setImageData(globalConstant.InitialImageData);
         formik.resetForm();
+        handleGetCategoryData();
+      } else {
+        toast.error(data?.message, { autoClose: 2000 });
       }
     } catch (error) {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
     }
   };
 
-  // update size api handler
-  const handleUpdateSize = async (values) => {
-    const transformValue = {
-      title: values.title,
-      size: `${values.size1}*${values.size2}`,
-      sizeId: values.sizeId,
-      image: imageData.imgUrl,
-    };
-    try {
-      const response = await service.sizePage.updateSize(transformValue);
-      if (response.status === 200) {
-        toast.success(response?.data?.message, {
-          autoClose: 2000,
-        });
-        setSizeModalType({
-          isModalOpen: false,
-          isEdit: false,
-        });
-        setImageData(globalConstant.InitialImageData);
-        formik.resetForm();
-        handleGetSizeData();
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message, { autoClose: 2000 });
-    }
-  };
-
-  // delete size api handler
-  const handleDeleteData = async (data) => {
-    const deletedId = {
-      sizeId: data._id,
-    };
-    try {
-      const response = await service.sizePage.deleteSize(deletedId);
-      if (response.status === 200) {
-        toast.success(response?.data?.message, {
-          autoClose: 2000,
-        });
-        handleGetSizeData();
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message, { autoClose: 2000 });
-    }
-  };
-
-  useEffect(() => {
-    handleGetSizeData();
-  }, [queryParams]);
-
-  // toggle modalBox
   const handleToggleModal = () => {
-    if (sizeModalType.isModalOpen) {
+    if (categoryModalType.isModalOpen) {
+      setCategoryModalType(globalConstant.InitialModalStateData);
       setImageData(globalConstant.InitialImageData);
       formik.resetForm();
-      setSizeModalType(globalConstant.InitialModalStateData);
     } else {
-      setSizeModalType((prev) => ({
+      setCategoryModalType((prev) => ({
         ...prev,
-        isModalOpen: !sizeModalType.isModalOpen,
+        isModalOpen: !prev.isModalOpen,
       }));
     }
   };
 
-  // edit size data handler
-  const handleEditData = (data) => {
-    const { title, size, _id, image } = data;
-    const getSize = size.split("*");
-    const [size1, size2] = getSize;
-    formik.setFieldValue("title", title);
-    formik.setFieldValue("size1", size1);
-    formik.setFieldValue("size2", size2);
-    formik.setFieldValue("sizeId", _id);
-    setImageData({
-      imgUrl: image,
-      previewUrl: image,
-    });
-    setSizeModalType((prev) => ({
-      ...prev,
-      isModalOpen: true,
-      isEdit: true,
-    }));
+  // function to get the listing of the shop by use data
+  const handleGetCategoryData = async (queryParams) => {
+    try {
+      const response = await service.categoryPage.listing(queryParams);
+      if (response.status === 200) {
+        setCategoryData(response?.data?.data);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, { autoClose: 2000 });
+    }
   };
 
+  // useEffect to call the api for the first time during first render
+  useEffect(() => {
+    handleGetCategoryData(queryParams);
+  }, [queryParams]);
+
+  // function to handle Edit of single shop by use data
+  const handleEditCategoryData = (data) => {
+    if (data) {
+      formik.setFieldValue("title", data.title);
+      formik.setFieldValue("description", data.description);
+      formik.setFieldValue("id", data._id);
+      setCategoryModalType({
+        isEdit: true,
+        isModalOpen: true,
+      });
+      setImageData({
+        imgUrl: data.image,
+        previewUrl: data.image,
+      });
+    }
+  };
+
+  // function to handle update of single shop by use data
+  const handleUpdateCategoryData = async (values) => {
+    const transformAddData = {
+      title: values.title,
+      categoryId: values.id,
+      description: values.description,
+      image: imageData.imgUrl,
+    };
+    try {
+      const response = await service.categoryPage.updateCategory(
+        transformAddData
+      );
+      const data = response?.data;
+      if (data?.status) {
+        toast.success(data?.message, { autoClose: 2000 });
+        handleToggleModal();
+        formik.resetForm();
+        handleGetCategoryData();
+      } else {
+        toast.error(data?.message, { autoClose: 2000 });
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, { autoClose: 2000 });
+    }
+  };
+
+  // function to handle delete data
+  const handleDeletecategoryData = async (id) => {
+    const deletedDataId = {
+      categoryId: id,
+    };
+    try {
+      const response = await service.categoryPage.removeCategory(deletedDataId);
+      const data = response?.data;
+      if (data?.status) {
+        toast.success(data?.message, { autoClose: 2000 });
+        handleGetCategoryData();
+        setOpenDeleteModal({ isDeleteModalOpen: false, deleteId: "" });
+      } else {
+        toast.error(data?.message, { autoClose: 2000 });
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, { autoClose: 2000 });
+    }
+  };
+
+  // function to handle image upload verification=
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -263,8 +270,8 @@ const Index = () => {
 
   // pagination handler function
   const totalPages = useMemo(() => {
-    return Math.ceil(sizesData?.total / 10);
-  }, [sizesData?.total]);
+    return Math.ceil(categoryData?.total / 10);
+  }, [categoryData?.total]);
 
   const handleOnPageChange = (_event, value) => {
     setQueryParams((prevParams) => ({
@@ -279,36 +286,29 @@ const Index = () => {
       limit: limit,
     }));
   };
-
   return (
     <>
-      <Grid container sx={{ justifyContent: "space-between", mb: 3 }}>
+      <Grid container mb={3} sx={{ justifyContent: "space-between" }}>
         <Grid item lg={6}>
           {/* <CustomInput /> */}
         </Grid>
-        <Grid item lg={1.5}>
+        <Grid item lg={2}>
           <CustomButton
-            startIcon={<AddIcon />}
             type={"button"}
-            onClick={() =>
-              setSizeModalType((prev) => ({
-                isEdit: false,
-                isModalOpen: true,
-              }))
-            }
+            startIcon={<AddIcon />}
+            onClick={handleToggleModal}
             variant={"contained"}
-            buttonName={"Add Size"}
+            buttonName={"Add Category"}
           />
         </Grid>
       </Grid>
       <Box>
         <CustomTable
-          isLoading={!sizesData || !sizesData.list}
-          columns={Sizecolumns}
+          isLoading={!categoryData || !categoryData?.category}
+          columns={categorycolumns}
           data={
-            sizesData &&
-            sizesData.list &&
-            sizesData?.list.map((item, index) => ({
+            isValidArray(categoryData?.category) &&
+            categoryData?.category.map((item, index) => ({
               ...item,
               index_number: index + 1,
               action: (
@@ -316,7 +316,6 @@ const Index = () => {
                   sx={{
                     width: "100%",
                     display: "flex",
-                    justifyContent: "center",
 
                     gap: 3,
                   }}
@@ -324,7 +323,7 @@ const Index = () => {
                   <IconButton
                     aria-label="Edit"
                     color="success"
-                    onClick={() => handleEditData(item)}
+                    onClick={() => handleEditCategoryData(item)}
                     sx={{
                       borderRadius: "10px",
                       border: `1px solid`,
@@ -349,27 +348,30 @@ const Index = () => {
             }))
           }
         />
-
         <AppPagination
           totalPages={totalPages}
-          totalCount={sizesData?.total}
+          totalCount={categoryData?.total}
           limit={queryParams.limit}
           currentPage={queryParams.page}
           handleLimitChange={handleLimitChange}
           handlePageChange={handleOnPageChange}
         />
       </Box>
-      {sizeModalType.isModalOpen && (
+      {categoryModalType.isModalOpen && (
         <AppModal
-          open={sizeModalType.isModalOpen}
-          handleCloseOpen={handleToggleModal}
+          open={categoryModalType.isModalOpen}
           maxWidth={"sm"}
+          handleCloseOpen={handleToggleModal}
         >
           <Box>
             <Box
               sx={{
+                background: colors.white.main,
+                zIndex: 99,
                 px: 5,
                 py: 3,
+                position: "sticky",
+                top: 0,
                 borderBottom: `2px solid ${colors.bottedBorder.main}`,
                 borderBottomStyle: "dashed",
               }}
@@ -382,7 +384,9 @@ const Index = () => {
                 }}
               >
                 <Typography variant="title">
-                  {sizeModalType.isEdit ? "Edit Size Details" : "Add New Size"}
+                  {categoryModalType.isEdit
+                    ? "Edit Category Details"
+                    : "Add Category"}
                 </Typography>
 
                 <IconButton onClick={handleToggleModal}>
@@ -403,39 +407,21 @@ const Index = () => {
                   Boolean(formik.touched.title) && formik.errors.title
                 }
               />
-              <Stack
-                direction={"row"}
-                gap={5}
-                width={"100%"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <CustomInput
-                  name={"size1"}
-                  label={"Size 1"}
-                  handleChange={formik.handleChange}
-                  placeholder={"enter your size"}
-                  value={formik.values.size1}
-                  type={"number"}
-                  error={formik.errors.size1}
-                  helperText={
-                    Boolean(formik.touched.size1) && formik.errors.size1
-                  }
-                />
-                <Typography variant="h6"> - </Typography>
-                <CustomInput
-                  name={"size2"}
-                  label={"Size 2"}
-                  handleChange={formik.handleChange}
-                  placeholder={"enter your size"}
-                  value={formik.values.size2}
-                  type={"number"}
-                  error={formik.errors.size2}
-                  helperText={
-                    Boolean(formik.touched.size2) && formik.errors.size2
-                  }
-                />
-              </Stack>
+              <CustomInput
+                name={"description"}
+                label={"Description"}
+                handleChange={formik.handleChange}
+                placeholder={"enter description"}
+                value={formik.values.description}
+                multiline={true}
+                rows={4}
+                type={"text"}
+                error={formik.errors.description}
+                helperText={
+                  Boolean(formik.touched.description) &&
+                  formik.errors.description
+                }
+              />
               <Box mb={5}>
                 <Typography
                   variant="label"
@@ -508,7 +494,7 @@ const Index = () => {
                   </Grid>
                 </Grid>
               </Box>
-              {sizeModalType.isEdit ? (
+              {categoryModalType.isEdit ? (
                 <CustomButton
                   variant={"contained"}
                   type="submit"
@@ -572,7 +558,9 @@ const Index = () => {
                 <CustomButton
                   variant="contained"
                   buttonName="Confirm"
-                  onClick={() => handleDeleteData(openDeleteModal.deleteId)}
+                  onClick={() =>
+                    handleDeletecategoryData(openDeleteModal.deleteId)
+                  }
                 />
 
                 <CustomButton

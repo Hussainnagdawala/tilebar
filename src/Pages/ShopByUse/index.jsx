@@ -27,6 +27,7 @@ import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { globalConstant } from "../../constant";
 
 const Index = () => {
   const [shopByUseModalType, setShopByUseModalType] = useState({
@@ -59,26 +60,12 @@ const Index = () => {
     },
     {
       name: "Title",
-      selector: (row) =>
-        (
-          <Typography
-            variant="body2"
-            fontSize={12}
-            textTransform={"capitalize"}
-          >
-            {row?.title}
-          </Typography>
-        ) || "",
+      selector: (row) => row?.title || "",
     },
     {
       name: "Description",
       minWidth: 250,
-      selector: (row) =>
-        (
-          <Typography variant="body2" fontSize={12}>
-            {row?.description}
-          </Typography>
-        ) || "",
+      selector: (row) => row?.description || "",
     },
     {
       name: "FAQ's",
@@ -163,10 +150,17 @@ const Index = () => {
   };
 
   const handleToggleModal = () => {
-    setShopByUseModalType((prev) => ({
-      ...prev,
-      isModalOpen: !prev.isModalOpen,
-    }));
+    if (shopByUseModalType.isModalOpen) {
+      setFaq(globalConstant.InitialFaqData);
+      setShopByUseModalType(globalConstant.InitialModalStateData);
+      setImageData(globalConstant.InitialImageData);
+      formik.resetForm();
+    } else {
+      setShopByUseModalType((prev) => ({
+        ...prev,
+        isModalOpen: !prev.isModalOpen,
+      }));
+    }
   };
 
   // function to get the listing of the shop by use data
@@ -380,6 +374,10 @@ const Index = () => {
                             variant="h6"
                             sx={{
                               fontSize: ".9rem",
+                              maxWidth: "400px",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
                             }}
                           >
                             Question : {faqItem?.question}
@@ -388,6 +386,10 @@ const Index = () => {
                             variant="subtitle1"
                             sx={{
                               fontSize: ".8rem",
+                              maxWidth: "400px",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
                             }}
                           >
                             Answer : {faqItem?.answer}

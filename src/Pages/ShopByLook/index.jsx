@@ -27,6 +27,7 @@ import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { globalConstant } from "../../constant";
 
 const Index = () => {
   const [shopByLookModalType, setShopByLookModalType] = useState({
@@ -59,30 +60,14 @@ const Index = () => {
     },
     {
       name: "Title",
-      selector: (row) =>
-        (
-          <Typography
-            variant="body2"
-            fontSize={12}
-            textTransform={"capitalize"}
-          >
-            {row?.title}
-          </Typography>
-        ) || "",
+      selector: (row) => row?.title || "",
     },
     {
       name: "Description",
-      //   minWidth: 250,
-      selector: (row) =>
-        (
-          <Typography variant="body2" fontSize={12}>
-            {row?.description}
-          </Typography>
-        ) || "",
+      selector: (row) => row?.description || "",
     },
     {
       name: "FAQ's",
-      minWidth: 250,
       selector: (row) => row?.faq || "",
     },
     {
@@ -165,10 +150,17 @@ const Index = () => {
   };
 
   const handleToggleModal = () => {
-    setShopByLookModalType((prev) => ({
-      ...prev,
-      isModalOpen: !prev.isModalOpen,
-    }));
+    if (shopByLookModalType.isModalOpen) {
+      setFaq(globalConstant.InitialFaqData);
+      setImageData(globalConstant.InitialImageData);
+      setShopByLookModalType(globalConstant.InitialModalStateData);
+      formik.resetForm();
+    } else {
+      setShopByLookModalType((prev) => ({
+        ...prev,
+        isModalOpen: !prev.isModalOpen,
+      }));
+    }
   };
 
   // function to get the listing of the shop by use data
@@ -384,17 +376,25 @@ const Index = () => {
                             variant="h6"
                             sx={{
                               fontSize: ".9rem",
+                              maxWidth: "400px",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
                             }}
                           >
-                            Question : {faqItem?.question}
+                            Que : {faqItem?.question}
                           </Typography>
                           <Typography
                             variant="subtitle1"
                             sx={{
                               fontSize: ".8rem",
+                              maxWidth: "400px",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
                             }}
                           >
-                            Answer : {faqItem?.answer}
+                            Ans : {faqItem?.answer}
                           </Typography>
                         </React.Fragment>
                       );

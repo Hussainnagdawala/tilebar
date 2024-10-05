@@ -19,8 +19,8 @@ export const globalConstant = {
       path: RoutePaths.sliderPath,
     },
     {
-      title: "Add Tag",
-      path: RoutePaths.adminPath,
+      title: "Add Category",
+      path: RoutePaths.categoryPath,
     },
     {
       title: "Shop By Use",
@@ -82,9 +82,9 @@ export const globalConstant = {
       path: RoutePaths.sizesPath,
     },
     {
-      title: "Add Tag",
+      title: "Add Category",
       icon: StyleIcon,
-      path: RoutePaths.adminPath,
+      path: RoutePaths.categoryPath,
     },
     {
       title: "Shop By Use",
@@ -151,4 +151,9 @@ export const globalConstant = {
   InitialFaqData: [{ question: "", answer: "" }],
   InitialImageData: { imgUrl: "", previewUrl: "" },
   InitialModalStateData: { isEdit: false, isModalOpen: false },
+  InitialQueryParamData: {
+    page: 1,
+    search: "",
+    limit: 10,
+  },
 };

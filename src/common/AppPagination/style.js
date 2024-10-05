@@ -63,8 +63,8 @@ export const style = {
         color: "#fff",
       },
       "&:not(.Mui-selected)": {
-        color:  colors.darkGray.main,
         borderRadius : '5px',
+        color:  colors.darkGray.main,
         borderColor: colors.darkGray.main,
       },
     },
