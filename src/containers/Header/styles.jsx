@@ -10,7 +10,7 @@ export const headerStyles = {
       ...appStyles.noBoxShadow,
       ...appStyles.borderbottom,
       ...appStyles.borderColorSecondary,
-      background: "#f7f4ed",
+      background: "#fffadf",
       width: {
         xs: "100%",
         md: fullWidthHeader ? `calc(100% - ${drawerWidth})` : "100%",

@@ -42,9 +42,9 @@ const Interceptor = () => {
           if (error.response) {
             if (error.response.status === 401) {
               localStorage.removeItem("access_token");
-              navigate("/login");
+              navigate("/auth/login");
             } else if (error.response.status === 503) {
-              navigate("/login");
+              navigate("/auth/login");
               window.location.reload();
             }
           }

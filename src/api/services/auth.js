@@ -1,4 +1,3 @@
-import { globalConstant } from "../../constant";
 import Dictionary from "../dictionary";
 import axios from "axios";
 const { auth } = Dictionary;

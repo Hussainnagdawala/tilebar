@@ -1,4 +1,3 @@
-import { colors } from "../../theme";
 const drawerWidth = "260px";
 
 export const sidebarStyles = {
@@ -7,7 +6,7 @@ export const sidebarStyles = {
     width: drawerWidth,
     flexShrink: 0,
     "& .MuiDrawer-paper": {
-      background : '#f7f4ed',
+      background : '#fffadf',
       // background: "#635d4f",
       // background: colors.primary.main,
       width: drawerWidth,

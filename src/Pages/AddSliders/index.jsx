@@ -1,7 +1,7 @@
 import {
   Box,
   Button,
-  Grid,
+  Grid2,
   IconButton,
   ImageList,
   ImageListItem,
@@ -160,11 +160,20 @@ const Index = () => {
   };
   return (
     <>
-      <Grid container sx={{ justifyContent: "space-between", mb: 3 }}>
-        <Grid item lg={6}>
+      <Grid2
+        container
+        sx={{ justifyContent: "space-between", alignItems: "center", mb: 3 }}
+      >
+        <Grid2 item lg={6}>
+          <Typography variant="h6" color={colors.primary.main}>
+            Upload and organize slider images
+          </Typography>
+          <Typography variant="body2" color={colors.darkGray.main}>
+            These images will appear in the main banner on the website.
+          </Typography>
           {/* <CustomInput /> */}
-        </Grid>
-        <Grid item lg={1.5}>
+        </Grid2>
+        <Grid2 item lg={1.5}>
           <CustomButton
             startIcon={<AddIcon />}
             type={"button"}
@@ -177,18 +186,9 @@ const Index = () => {
             variant={"contained"}
             buttonName={"Add Slider"}
           />
-        </Grid>
-      </Grid>
-      <ImageList
-        sx={{
-          "& .MuiImageListItem-standard": {
-            borderRadius: "10px",
-            overflow: "hidden",
-          },
-        }}
-        cols={2}
-        gap={20}
-      >
+        </Grid2>
+      </Grid2>
+      <ImageList sx={sliderStyles.sliderStyles} cols={2} gap={20}>
         {isValidArray(bannerData) &&
           bannerData.map((item) => (
             <ImageListItem
@@ -202,33 +202,17 @@ const Index = () => {
                 src={`${item.image}?&w=248&h=164&fit=contain&auto=format`}
                 alt={item._id}
                 loading="lazy"
-                onLoad={() => setLoading(false)}
-                style={{
-                  display: loading ? "none" : "block",
-                  height: "300px",
-                  objectFit: "cover",
-                  objectPosition: "50% 50%",
-                }}
+                style={sliderStyles.imageStyle}
               />
               <ImageListItemBar
-                sx={{
-                  background:
-                    "linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, " +
-                    "rgba(0,0,0,0.3) 30%, rgba(0,0,0,0) 100%)",
-                  p: 3,
-                }}
+                sx={sliderStyles.imageListTopBarStyle}
                 position="top"
                 actionIcon={
                   <IconButton
                     onClick={() => handleDeleteData(item?._id)}
                     color="primary"
-                    sx={{
-                      background: "rgba(255,255,255,0.9)",
-                      "&:hover": {
-                        background: "rgba(255,255,255,0.7)",
-                      },
-                    }}
-                    aria-label={`star ${item.title}`}
+                    sx={sliderStyles.iconButtonStyle}
+                    aria-label={`star ${item?._id}`}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -260,23 +244,15 @@ const Index = () => {
                 </IconButton>
               </Box>
             </Box>
-            <Grid container px={5} py={5}>
-              <Grid item xs={12}>
+            <Grid2 container px={5} py={5}>
+              <Grid2 item xs={12}>
                 {!selectedimageData.previewUrl ? (
                   <Button
                     component="label"
                     role={undefined}
                     variant="outlined"
                     tabIndex={-1}
-                    sx={{
-                      width: "100%",
-                      p: 10,
-                      borderRadius: "10px",
-                      border: `2px dashed ${colors.darkGray.main}`,
-                      "&:hover": {
-                        border: `2px dashed ${colors.darkGray.main}`,
-                      },
-                    }}
+                    sx={sliderStyles.imageUploadButtonStyle}
                   >
                     <Box textAlign={"center"}>
                       <UploadRoundedIcon
@@ -341,13 +317,7 @@ const Index = () => {
                         role={undefined}
                         variant="outlined"
                         tabIndex={-1}
-                        sx={{
-                          borderRadius: "10px",
-                          width: "100%",
-                          textTransform: "capitalize",
-                          minHeight: "45px",
-                          marginTop: "clamp(.75rem,2vw, 1rem)",
-                        }}
+                        sx={sliderStyles.changeImageButtonStyle}
                         startIcon={<UploadRoundedIcon />}
                       >
                         Change file
@@ -378,8 +348,8 @@ const Index = () => {
                     Please Upload the Image{" "}
                   </Typography>
                 )}
-              </Grid>
-            </Grid>
+              </Grid2>
+            </Grid2>
           </Box>
         </AppModal>
       )}
