@@ -174,7 +174,7 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
           })}
       </List>
       {/* ends */}
-      <List sx={{ px: 4 }}>
+      {/* <List sx={{ px: 4 }}>
         {globalConstant.UTILITY_MENU_LIST.map((item) => {
           const Icon = item.icon;
           return (
@@ -218,7 +218,7 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
             </React.Fragment>
           );
         })}
-      </List>
+      </List> */}
     </Stack>
   );
 };

@@ -12,6 +12,8 @@ const ShopByColor = lazy(() => import("../../Pages/ShopByColor"));
 const Category = lazy(() => import("../../Pages/Category"));
 const Sizes = lazy(() => import("../../Pages/Sizes"));
 const AddSliders = lazy(() => import("../../Pages/AddSliders"));
+const Product = lazy(() => import("../../Pages/ProductListing"));
+const AddProduct = lazy(() => import("../../Pages/AddProduct"));
 // const NotFound = lazy(() => import("../../components/common/PageNotFound"));
 
 export {
@@ -26,5 +28,7 @@ export {
   ShopByFinish,
   ShopByColor,
   Category,
+  AddProduct,
+  Product,
   // NotFound,
 };

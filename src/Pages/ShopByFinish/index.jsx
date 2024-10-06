@@ -28,6 +28,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 import { globalConstant } from "../../constant";
+import CustomCategoryAutocomplete from "../../common/CustomCategoryAutocomplete";
 
 const Index = () => {
   const [shopByFinishModalType, setShopByFinishModalType] = useState(
@@ -46,6 +47,8 @@ const Index = () => {
   const { isValidArray } = useEmpty();
   const [imageData, setImageData] = useState(globalConstant.InitialImageData);
   const [faq, setFaq] = useState(globalConstant.InitialFaqData);
+  const [categoryData, setCategoryData] = useState({});
+  const [selectedCategoryData, setSelectedCategoryData] = useState({});
 
   // table data columns
   const shopByFinishcolumns = [
@@ -56,26 +59,15 @@ const Index = () => {
     },
     {
       name: "Title",
-      selector: (row) =>
-        (
-          <Typography
-            variant="body2"
-            fontSize={12}
-            textTransform={"capitalize"}
-          >
-            {row?.title}
-          </Typography>
-        ) || "",
+      selector: (row) => row?.title || "",
     },
     {
       name: "Description",
-      //   minWidth: 250,
-      selector: (row) =>
-        (
-          <Typography variant="body2" fontSize={12}>
-            {row?.description}
-          </Typography>
-        ) || "",
+      selector: (row) => row?.description || "",
+    },
+    {
+      name: "Category",
+      selector: (row) => row?.categoryId?.title || "",
     },
     {
       name: "FAQ's",
@@ -142,6 +134,7 @@ const Index = () => {
       image: imageData.imgUrl,
       name: values.name,
       faq: faq,
+      categoryId: selectedCategoryData?._id,
     };
     try {
       const response = await service.shopByFinishPage.addShopFinish(
@@ -167,6 +160,7 @@ const Index = () => {
       formik.resetForm();
       setImageData(globalConstant.InitialImageData);
       setFaq(globalConstant.InitialFaqData);
+      setSelectedCategoryData({});
     } else {
       setShopByFinishModalType((prev) => ({
         ...prev,
@@ -186,6 +180,32 @@ const Index = () => {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
     }
   };
+
+  // function to get the categoryData
+  const handleGetCategoryData = async () => {
+    const queryParams = {
+      limit: 1000,
+    };
+    try {
+      const response = await service.categoryPage.listing(queryParams);
+      if (response.status === 200) {
+        setCategoryData(response?.data?.data);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, { autoClose: 2000 });
+    }
+  };
+
+  // handleCategoryChange
+  const handleCategoryChange = (event, value) => {
+    if (!value) return;
+    setSelectedCategoryData(value);
+  };
+
+  // useEffect to call the api for the categoryData for the first time
+  useEffect(() => {
+    handleGetCategoryData();
+  }, []);
 
   // useEffect to call the api for the first time during first render
   useEffect(() => {
@@ -230,6 +250,7 @@ const Index = () => {
       formik.setFieldValue("name", data.name);
       formik.setFieldValue("description", data.description);
       formik.setFieldValue("id", data._id);
+      setSelectedCategoryData(data?.categoryId);
       setShopByFinishModalType({
         isEdit: true,
         isModalOpen: true,
@@ -251,6 +272,7 @@ const Index = () => {
       image: imageData.imgUrl,
       name: values.name,
       faq: faq,
+      categoryId: selectedCategoryData?._id,
     };
     try {
       const response = await service.shopByFinishPage.updateShopFinish(
@@ -305,11 +327,7 @@ const Index = () => {
       const formData = new FormData();
       formData.append("image", file);
       try {
-        const res = await axios.post(
-          "https://api.betterbeout.com/api/v1/image/uploader",
-          formData
-        );
-
+        const res = await service.imageUploaderService.uploadImage(formData);
         if (res.data && res.data.url) {
           setImageData((prev) => ({
             ...prev,
@@ -389,17 +407,25 @@ const Index = () => {
                             variant="h6"
                             sx={{
                               fontSize: ".9rem",
+                              maxWidth: "400px",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
                             }}
                           >
-                            Question : {faqItem?.question}
+                            Que : {faqItem?.question}
                           </Typography>
                           <Typography
                             variant="subtitle1"
                             sx={{
                               fontSize: ".8rem",
+                              maxWidth: "400px",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
                             }}
                           >
-                            Answer : {faqItem?.answer}
+                            Ans : {faqItem?.answer}
                           </Typography>
                         </React.Fragment>
                       );
@@ -528,6 +554,19 @@ const Index = () => {
                   formik.errors.description
                 }
               />
+              <Box mb={4}>
+                <Typography
+                  variant="label"
+                  sx={{ textTransform: "capitalize", mb: 3 }}
+                >
+                  Category
+                </Typography>
+                <CustomCategoryAutocomplete
+                  value={selectedCategoryData}
+                  handleChange={handleCategoryChange}
+                  optionListData={categoryData?.category}
+                />
+              </Box>
               <Box mb={5}>
                 <Typography
                   variant="label"
@@ -593,6 +632,7 @@ const Index = () => {
                       <img
                         src={imageData?.previewUrl}
                         width={"100%"}
+                        alt="preview"
                         style={{ objectFit: "contain" }}
                         height={"100%"}
                       />

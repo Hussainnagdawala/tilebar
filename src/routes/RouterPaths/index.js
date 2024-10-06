@@ -9,4 +9,7 @@ export const RoutePaths = {
   shopByColorPath: "/shop-by-color",
   sizesPath: "/sizes",
   sliderPath: "/sliderPath",
+  productPath: "/product",
+  addProductPath: "/product/add",
+  editProductPath: "/product/edit/:id",
 };

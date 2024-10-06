@@ -27,6 +27,22 @@ export const globalConstant = {
       path: RoutePaths.shopByUsePath,
     },
     {
+      title: "Product List",
+      path: RoutePaths.productPath,
+    },
+    {
+      title: "Add Product",
+      path: RoutePaths.addProductPath,
+    },
+    {
+      title: "Edit Product",
+      path: RoutePaths.editProductPath,
+    },
+    {
+      title: "Product Details",
+      path: RoutePaths.editProductPath,
+    },
+    {
       title: "Shop By Look",
       path: RoutePaths.shopByLookPath,
     },
@@ -87,6 +103,11 @@ export const globalConstant = {
       path: RoutePaths.categoryPath,
     },
     {
+      title: "Add Product",
+      icon: StyleIcon,
+      path: RoutePaths.productPath,
+    },
+    {
       title: "Shop By Use",
       icon: WindowRoundedIcon,
       path: RoutePaths.shopByUsePath,
@@ -107,20 +128,20 @@ export const globalConstant = {
       path: RoutePaths.shopByColorPath,
     },
   ],
-  UTILITY_MENU_LIST: [
-    {
-      title: "Setting",
-      icon: SettingIcon,
-      path: RoutePaths.settingsPath,
-      isReferral: false,
-    },
-    {
-      title: "Help Center",
-      icon: HelpCenterIcon,
-      path: RoutePaths.helpCenterPath,
-      isReferral: false,
-    },
-  ],
+  // UTILITY_MENU_LIST: [
+  //   {
+  //     title: "Setting",
+  //     icon: SettingIcon,
+  //     path: RoutePaths.settingsPath,
+  //     isReferral: false,
+  //   },
+  //   {
+  //     title: "Help Center",
+  //     icon: HelpCenterIcon,
+  //     path: RoutePaths.helpCenterPath,
+  //     isReferral: false,
+  //   },
+  // ],
   IS_AUTH_SCREEN: "auth",
 
   TABLE_LIMIT: [

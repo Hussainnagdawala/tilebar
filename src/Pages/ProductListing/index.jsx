@@ -19,6 +19,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import service from "../../api/services";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { toast } from "react-toastify";
 import { useEmpty } from "../../hooks";
 import { CloseIcon } from "../../assets";
@@ -26,48 +27,52 @@ import { colors } from "../../theme";
 import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { globalConstant } from "../../constant";
-import CustomCategoryAutocomplete from "../../common/CustomCategoryAutocomplete";
 
 const Index = () => {
-  const [shopByColorModalType, setShopByColorModalType] = useState(
-    globalConstant.InitialModalStateData
-  );
-  const [queryParams, setQueryParams] = useState(
-    globalConstant.InitialQueryParamData
-  );
-  const [imageData, setImageData] = useState(globalConstant.InitialImageData);
-  const [categoryData, setCategoryData] = useState([]);
-  const [selectedCategoryData, setSelectedCategoryData] = useState([]);
+  const [productModalType, setProductModalType] = useState({
+    isModalOpen: false,
+    isEdit: false,
+  });
   const [openDeleteModal, setOpenDeleteModal] = useState({
     isDeleteModalOpen: false,
     deleteId: "",
   });
-  const [shopByColorData, setShopByColorData] = useState({});
+  const [queryParams, setQueryParams] = useState({
+    page: 1,
+    search: "",
+    limit: 10,
+  });
+  const [productData, setProductData] = useState({});
+  const [imageData, setImageData] = useState({
+    imgUrl: "",
+    previewUrl: "",
+  });
   const { isValidArray } = useEmpty();
-
   // table data columns
   const shopByColorcolumns = [
     { name: "#", selector: (row) => row?.index_number ?? 0 },
     {
-      name: "Title",
-      selector: (row) => row?.title || "",
+      name: "Name",
+      selector: (row) => row?.name || "",
     },
     {
       name: "Description",
       selector: (row) => row?.description || "",
     },
     {
-      name: "Category",
-      selector: (row) => row?.categoryId?.title || "",
+      name: "Inventory",
+      selector: (row) => row?.inventory || "",
+    },
+    {
+      name: "Price",
+      selector: (row) => `$${row?.price}` || "",
     },
     {
       name: "Image",
-
       selector: (row) =>
         (
           <img
-            src={row?.image}
+            src={row?.images[0]}
             alt={"shop-by-use-image"}
             width={"150px"}
             style={{ maxHeight: "220px", objectFit: "contain" }}
@@ -78,74 +83,78 @@ const Index = () => {
   ];
 
   // file button input style
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
+  // const VisuallyHiddenInput = styled("input")({
+  //   clip: "rect(0 0 0 0)",
+  //   clipPath: "inset(50%)",
+  //   height: 1,
+  //   overflow: "hidden",
+  //   position: "absolute",
+  //   bottom: 0,
+  //   left: 0,
+  //   whiteSpace: "nowrap",
+  //   width: 1,
+  // });
 
   // formik configuration
-  const formik = useFormik({
-    initialValues: {
-      title: "",
-      description: "",
-      image: "",
-      id: "",
-    },
-    validationSchema: yup.object({
-      title: yup.string().required("title is required"),
-      description: yup.string().required("description is required"),
-    }),
-    onSubmit: (values) => {
-      if (shopByColorModalType.isEdit) {
-        handleUpdateShopByColorData(values);
-      } else {
-        handleAddByShopColor(values);
-      }
-    },
-  });
+  // const formik = useFormik({
+  //   initialValues: {
+  //     title: "",
+  //     description: "",
+  //     image: "",
+  //     id: "",
+  //   },
+  //   validationSchema: yup.object({
+  //     title: yup.string().required("title is required"),
+  //     description: yup.string().required("description is required"),
+  //   }),
+  //   onSubmit: (values) => {
+  //     if (productModalType.isEdit) {
+  //       // handleUpdateproductData(values);
+  //     } else {
+  //       // handleAddByShopColor(values);
+  //     }
+  //   },
+  // });
 
   // function to Add shop by use data
-  const handleAddByShopColor = async (values) => {
-    const transformAddData = {
-      title: values.title,
-      description: values.description,
-      image: imageData.imgUrl,
-      name: values.name,
-      categoryId: selectedCategoryData?._id,
-    };
-    try {
-      const response = await service.shopByColorServices.addShopColor(
-        transformAddData
-      );
-      const data = response?.data;
-      if (data?.status) {
-        toast.success(data?.message, { autoClose: 2000 });
-        handleToggleModal();
-        formik.resetForm();
-        handleGetShopByColorData();
-      } else {
-        toast.error(data?.message, { autoClose: 2000 });
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message, { autoClose: 2000 });
-    }
-  };
+  // const handleAddByShopColor = async (values) => {
+  //   const transformAddData = {
+  //     title: values.title,
+  //     description: values.description,
+  //     image: imageData.imgUrl,
+  //     name: values.name,
+  //   };
+  //   try {
+  //     const response = await service.shopByColorServices.addShopColor(
+  //       transformAddData
+  //     );
+  //     const data = response?.data;
+  //     if (data?.status) {
+  //       toast.success(data?.message, { autoClose: 2000 });
+  //       handleToggleModal();
+  //       formik.resetForm();
+  //       handleGetProductData();
+  //     } else {
+  //       toast.error(data?.message, { autoClose: 2000 });
+  //     }
+  //   } catch (error) {
+  //     toast.error(error?.response?.data?.message, { autoClose: 2000 });
+  //   }
+  // };
 
   const handleToggleModal = () => {
-    if (shopByColorModalType.isModalOpen) {
-      formik.resetForm();
-      setShopByColorModalType(globalConstant.InitialModalStateData);
-      setImageData(globalConstant.InitialImageData);
-      setSelectedCategoryData("");
+    if (productModalType.isModalOpen) {
+      setProductModalType((prev) => ({
+        isEdit: false,
+        isModalOpen: false,
+      }));
+      // formik.resetForm();
+      setImageData({
+        imgUrl: "",
+        previewUrl: "",
+      });
     } else {
-      setShopByColorModalType((prev) => ({
+      setProductModalType((prev) => ({
         ...prev,
         isModalOpen: !prev.isModalOpen,
       }));
@@ -153,97 +162,68 @@ const Index = () => {
   };
 
   // function to get the listing of the shop by use data
-  const handleGetShopByColorData = async (queryParams) => {
+  const handleGetProductData = async (queryParams) => {
     try {
-      const response = await service.shopByColorServices.listing(queryParams);
+      const response = await service.productPage.listing(queryParams);
       if (response.status === 200) {
-        setShopByColorData(response?.data?.data);
+        setProductData(response?.data?.data);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
     }
   };
-
-  // function to get the categoryData
-  const handleGetCategoryData = async () => {
-    const queryParams = {
-      limit: 1000,
-    };
-    try {
-      const response = await service.categoryPage.listing(queryParams);
-      if (response.status === 200) {
-        setCategoryData(response?.data?.data);
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message, { autoClose: 2000 });
-    }
-  };
-
-  // useEffect to call the api for the categoryData for the first time
-  useEffect(() => {
-    handleGetCategoryData();
-  }, []);
 
   // useEffect to call the api for the first time during first render
   useEffect(() => {
-    handleGetShopByColorData(queryParams);
+    handleGetProductData(queryParams);
   }, [queryParams]);
 
-  // handleCategoryChange
-  const handleCategoryChange = (event, value) => {
-    if (!value) return;
-    setSelectedCategoryData(value);
-  };
-
   // function to handle Edit of single shop by use data
-  const handleEditShopByColorData = (data) => {
-    if (data) {
-      formik.setFieldValue("title", data.title);
-      formik.setFieldValue("name", data.name);
-      formik.setFieldValue("description", data.description);
-      formik.setFieldValue("id", data._id);
-      setSelectedCategoryData(data?.categoryId);
-      setShopByColorModalType({
-        isEdit: true,
-        isModalOpen: true,
-      });
-      setImageData({
-        imgUrl: data.image,
-        previewUrl: data.image,
-      });
-    }
-  };
+  // const handleEditproductData = (data) => {
+  //   if (data) {
+  //     formik.setFieldValue("title", data.title);
+  //     formik.setFieldValue("name", data.name);
+  //     formik.setFieldValue("description", data.description);
+  //     formik.setFieldValue("id", data._id);
+  //     setProductModalType({
+  //       isEdit: true,
+  //       isModalOpen: true,
+  //     });
+  //     setImageData({
+  //       imgUrl: data.image,
+  //       previewUrl: data.image,
+  //     });
+  //   }
+  // };
 
   // function to handle update of single shop by use data
-  const handleUpdateShopByColorData = async (values) => {
-    const transformAddData = {
-      title: values.title,
-      colorId: values.id,
-      description: values.description,
-      image: imageData.imgUrl,
-      categoryId: selectedCategoryData?._id,
-    };
-    try {
-      const response = await service.shopByColorServices.updateShopColor(
-        transformAddData
-      );
-      const data = response?.data;
-      if (data?.status) {
-        toast.success(data?.message, { autoClose: 2000 });
-        handleToggleModal();
-        formik.resetForm();
-        setSelectedCategoryData({});
-        handleGetShopByColorData();
-      } else {
-        toast.error(data?.message, { autoClose: 2000 });
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message, { autoClose: 2000 });
-    }
-  };
+  // const handleUpdateproductData = async (values) => {
+  //   const transformAddData = {
+  //     title: values.title,
+  //     colorId: values.id,
+  //     description: values.description,
+  //     image: imageData.imgUrl,
+  //   };
+  //   try {
+  //     const response = await service.shopByColorServices.updateShopColor(
+  //       transformAddData
+  //     );
+  //     const data = response?.data;
+  //     if (data?.status) {
+  //       toast.success(data?.message, { autoClose: 2000 });
+  //       handleToggleModal();
+  //       formik.resetForm();
+  //       handleGetProductData();
+  //     } else {
+  //       toast.error(data?.message, { autoClose: 2000 });
+  //     }
+  //   } catch (error) {
+  //     toast.error(error?.response?.data?.message, { autoClose: 2000 });
+  //   }
+  // };
 
   // function to handle delete data
-  const handleDeleteShopByColorData = async (id) => {
+  const handleDeleteproductData = async (id) => {
     const deletedDataId = {
       colorId: id,
     };
@@ -254,7 +234,7 @@ const Index = () => {
       const data = response?.data;
       if (data?.status) {
         toast.success(data?.message, { autoClose: 2000 });
-        handleGetShopByColorData();
+        handleGetProductData();
         setOpenDeleteModal({ isDeleteModalOpen: false, deleteId: "" });
       } else {
         toast.error(data?.message, { autoClose: 2000 });
@@ -265,31 +245,31 @@ const Index = () => {
   };
 
   // function to handle image upload verification=
-  const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const blobUrl = URL.createObjectURL(file);
-      setImageData((prev) => ({
-        ...prev,
-        previewUrl: blobUrl,
-      }));
-      const formData = new FormData();
-      formData.append("image", file);
-      try {
-        const res = await service.imageUploaderService.uploadImage(formData);
-        if (res.data && res.data.url) {
-          setImageData((prev) => ({
-            ...prev,
-            imgUrl: res.data.url,
-          }));
-        } else {
-          toast.error("Image upload response does not contain URL.");
-        }
-      } catch (error) {
-        toast.error("Failed to upload image");
-      }
-    }
-  };
+  // const handleFileUpload = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const blobUrl = URL.createObjectURL(file);
+  //     setImageData((prev) => ({
+  //       ...prev,
+  //       previewUrl: blobUrl,
+  //     }));
+  //     const formData = new FormData();
+  //     formData.append("image", file);
+  //     try {
+  //       const res = await service.imageUploaderService.uploadImage(formData);
+  //       if (res.data && res.data.url) {
+  //         setImageData((prev) => ({
+  //           ...prev,
+  //           imgUrl: res.data.url,
+  //         }));
+  //       } else {
+  //         toast.error("Image upload response does not contain URL.");
+  //       }
+  //     } catch (error) {
+  //       toast.error("Failed to upload image");
+  //     }
+  //   }
+  // };
 
   const handleDelete = (values) => {
     setOpenDeleteModal((prev) => ({
@@ -307,8 +287,8 @@ const Index = () => {
 
   // pagination handler function
   const totalPages = useMemo(() => {
-    return Math.ceil(shopByColorData?.total / 10);
-  }, [shopByColorData?.total]);
+    return Math.ceil(productData?.total / 10);
+  }, [productData?.total]);
   const handleOnPageChange = (_event, value) => {
     setQueryParams((prevParams) => ({
       ...prevParams,
@@ -339,11 +319,11 @@ const Index = () => {
       </Grid>
       <Box>
         <CustomTable
-          isLoading={!shopByColorData || !shopByColorData?.category}
+          isLoading={!productData || !productData?.list}
           columns={shopByColorcolumns}
           data={
-            isValidArray(shopByColorData?.category) &&
-            shopByColorData?.category.map((item, index) => ({
+            isValidArray(productData?.list) &&
+            productData?.list.map((item, index) => ({
               ...item,
               index_number: index + 1,
               action: (
@@ -358,7 +338,7 @@ const Index = () => {
                   <IconButton
                     aria-label="Edit"
                     color="success"
-                    onClick={() => handleEditShopByColorData(item)}
+                    // onClick={() => handleEditproductData(item)}
                     sx={{
                       borderRadius: "10px",
                       border: `1px solid`,
@@ -378,6 +358,16 @@ const Index = () => {
                   >
                     <DeleteIcon />
                   </IconButton>
+                  <IconButton
+                    aria-label="primary"
+                    color="primary"
+                    sx={{
+                      borderRadius: "10px",
+                      border: `1px solid ${colors.primary.main}`,
+                    }}
+                  >
+                    <RemoveRedEyeIcon />
+                  </IconButton>
                 </Box>
               ),
             }))
@@ -385,16 +375,16 @@ const Index = () => {
         />
         <AppPagination
           totalPages={totalPages}
-          totalCount={shopByColorData?.total}
+          totalCount={productData?.total}
           limit={queryParams.limit}
           currentPage={queryParams.page}
           handleLimitChange={handleLimitChange}
           handlePageChange={handleOnPageChange}
         />
       </Box>
-      {shopByColorModalType.isModalOpen && (
+      {/* {productModalType.isModalOpen && (
         <AppModal
-          open={shopByColorModalType.isModalOpen}
+          open={productModalType.isModalOpen}
           maxWidth={"sm"}
           handleCloseOpen={handleToggleModal}
         >
@@ -419,7 +409,7 @@ const Index = () => {
                 }}
               >
                 <Typography variant="title">
-                  {shopByColorModalType.isEdit
+                  {productModalType.isEdit
                     ? "Edit Shop By Color Details"
                     : "Add Shop By Color"}
                 </Typography>
@@ -429,7 +419,7 @@ const Index = () => {
                 </IconButton>
               </Box>
             </Box>
-            <Box p={5} component={"form"} onSubmit={formik.handleSubmit}>
+             <Box p={5} component={"form"} onSubmit={formik.handleSubmit}> 
               <CustomInput
                 name={"title"}
                 label={"Title"}
@@ -457,19 +447,6 @@ const Index = () => {
                   formik.errors.description
                 }
               />
-              <Box mb={4}>
-                <Typography
-                  variant="label"
-                  sx={{ textTransform: "capitalize", mb: 3 }}
-                >
-                  Category
-                </Typography>
-                <CustomCategoryAutocomplete
-                  value={selectedCategoryData}
-                  handleChange={handleCategoryChange}
-                  optionListData={categoryData?.category}
-                />
-              </Box>
               <Box mb={5}>
                 <Typography
                   variant="label"
@@ -526,7 +503,7 @@ const Index = () => {
                       <VisuallyHiddenInput
                         type="file"
                         accept=".jpg , .png , .jpeg"
-                        onChange={handleFileUpload}
+                        // onChange={handleFileUpload}
                       />
                     </Button>
                   </Grid>
@@ -534,7 +511,6 @@ const Index = () => {
                     {imageData?.previewUrl && (
                       <img
                         src={imageData?.previewUrl}
-                        alt="preview"
                         width={"100%"}
                         style={{ objectFit: "contain" }}
                         height={"100%"}
@@ -543,7 +519,7 @@ const Index = () => {
                   </Grid>
                 </Grid>
               </Box>
-              {shopByColorModalType.isEdit ? (
+              {productModalType.isEdit ? (
                 <CustomButton
                   variant={"contained"}
                   type="submit"
@@ -559,7 +535,7 @@ const Index = () => {
             </Box>
           </Box>
         </AppModal>
-      )}
+      )} */}
 
       {openDeleteModal.isDeleteModalOpen && (
         <AppModal
@@ -608,7 +584,7 @@ const Index = () => {
                   variant="contained"
                   buttonName="Confirm"
                   onClick={() =>
-                    handleDeleteShopByColorData(openDeleteModal.deleteId)
+                    handleDeleteproductData(openDeleteModal.deleteId)
                   }
                 />
 

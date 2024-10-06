@@ -7,6 +7,7 @@ import BannerSliderEndPoints from "./bannerSlider";
 import ShopByFinishEndpoints from "./shopByFinish";
 import ShopByColorEndpoints from "./shopByColor";
 import CategoryEndpoints from "./category";
+import ProductEndpoints from "./product";
 
 const dictionary = {
   auth,
@@ -18,5 +19,6 @@ const dictionary = {
   ShopByFinishEndpoints,
   ShopByColorEndpoints,
   CategoryEndpoints,
+  ProductEndpoints,
 };
 export default dictionary;

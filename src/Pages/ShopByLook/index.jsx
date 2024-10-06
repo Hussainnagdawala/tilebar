@@ -26,8 +26,8 @@ import { colors } from "../../theme";
 import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import axios from "axios";
 import { globalConstant } from "../../constant";
+import CustomCategoryAutocomplete from "../../common/CustomCategoryAutocomplete";
 
 const Index = () => {
   const [shopByLookModalType, setShopByLookModalType] = useState({
@@ -50,9 +50,11 @@ const Index = () => {
   });
   const { isValidArray } = useEmpty();
   const [faq, setFaq] = useState([{ question: "", answer: "" }]);
+  const [categoryData, setCategoryData] = useState({});
+  const [selectedCategoryData, setSelectedCategoryData] = useState({});
 
   // table data columns
-  const shopByUsecolumns = [
+  const shopByLookcolumns = [
     { name: "#", selector: (row) => row?.index_number ?? 0 },
     {
       name: "Name",
@@ -65,6 +67,10 @@ const Index = () => {
     {
       name: "Description",
       selector: (row) => row?.description || "",
+    },
+    {
+      name: "Category",
+      selector: (row) => row?.categoryId?.title || "",
     },
     {
       name: "FAQ's",
@@ -130,6 +136,7 @@ const Index = () => {
       image: imageData.imgUrl,
       name: values.name,
       faq: faq,
+      categoryId: selectedCategoryData?._id,
     };
     try {
       const response = await service.shopByLookPage.addShopLook(
@@ -140,6 +147,7 @@ const Index = () => {
         toast.success(data?.message, { autoClose: 2000 });
         handleToggleModal();
         formik.resetForm();
+        setSelectedCategoryData({});
         handleGetShopByLookData();
       } else {
         toast.error(data?.message, { autoClose: 2000 });
@@ -154,6 +162,7 @@ const Index = () => {
       setFaq(globalConstant.InitialFaqData);
       setImageData(globalConstant.InitialImageData);
       setShopByLookModalType(globalConstant.InitialModalStateData);
+      setSelectedCategoryData({});
       formik.resetForm();
     } else {
       setShopByLookModalType((prev) => ({
@@ -174,6 +183,32 @@ const Index = () => {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
     }
   };
+
+  // function to get the categoryData
+  const handleGetCategoryData = async () => {
+    const queryParams = {
+      limit: 1000,
+    };
+    try {
+      const response = await service.categoryPage.listing(queryParams);
+      if (response.status === 200) {
+        setCategoryData(response?.data?.data);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, { autoClose: 2000 });
+    }
+  };
+
+  // handleCategoryChange
+  const handleCategoryChange = (event, value) => {
+    if (!value) return;
+    setSelectedCategoryData(value);
+  };
+
+  // useEffect to call the api for the categoryData for the first time
+  useEffect(() => {
+    handleGetCategoryData();
+  }, []);
 
   // useEffect to call the api for the first time during first render
   useEffect(() => {
@@ -218,6 +253,7 @@ const Index = () => {
       formik.setFieldValue("name", data.name);
       formik.setFieldValue("description", data.description);
       formik.setFieldValue("id", data._id);
+      setSelectedCategoryData(data?.categoryId);
       setShopByLookModalType({
         isEdit: true,
         isModalOpen: true,
@@ -234,11 +270,12 @@ const Index = () => {
   const handleUpdateShopByLookData = async (values) => {
     const transformAddData = {
       title: values.title,
-      shopByUseId: values.id,
+      shopByLookId: values.id,
       description: values.description,
       image: imageData.imgUrl,
       name: values.name,
       faq: faq,
+      categoryId: selectedCategoryData?._id,
     };
     try {
       const response = await service.shopByLookPage.updateShopLook(
@@ -250,6 +287,7 @@ const Index = () => {
         handleToggleModal();
         formik.resetForm();
         handleGetShopByLookData();
+        setSelectedCategoryData({});
       } else {
         toast.error(data?.message, { autoClose: 2000 });
       }
@@ -261,7 +299,7 @@ const Index = () => {
   // function to handle delete data
   const handleDeleteShopByLookData = async (id) => {
     const deletedDataId = {
-      shopByUseId: id,
+      shopByLookId: id,
     };
     try {
       const response = await service.shopByLookPage.removeShopLook(
@@ -292,10 +330,7 @@ const Index = () => {
       const formData = new FormData();
       formData.append("image", file);
       try {
-        const res = await axios.post(
-          "https://api.betterbeout.com/api/v1/image/uploader",
-          formData
-        );
+        const res = await service.imageUploaderService.uploadImage(formData);
 
         if (res.data && res.data.url) {
           setImageData((prev) => ({
@@ -360,7 +395,7 @@ const Index = () => {
       <Box>
         <CustomTable
           isLoading={!shopByLookData || !shopByLookData?.category}
-          columns={shopByUsecolumns}
+          columns={shopByLookcolumns}
           data={
             isValidArray(shopByLookData?.category) &&
             shopByLookData?.category.map((item, index) => ({
@@ -523,6 +558,19 @@ const Index = () => {
                   formik.errors.description
                 }
               />
+              <Box mb={4}>
+                <Typography
+                  variant="label"
+                  sx={{ textTransform: "capitalize", mb: 3 }}
+                >
+                  Category
+                </Typography>
+                <CustomCategoryAutocomplete
+                  value={selectedCategoryData}
+                  handleChange={handleCategoryChange}
+                  optionListData={categoryData?.category}
+                />
+              </Box>
               <Box mb={5}>
                 <Typography
                   variant="label"
@@ -587,6 +635,7 @@ const Index = () => {
                     {imageData?.previewUrl && (
                       <img
                         src={imageData?.previewUrl}
+                        alt={"preview image"}
                         width={"100%"}
                         style={{ objectFit: "contain" }}
                         height={"100%"}

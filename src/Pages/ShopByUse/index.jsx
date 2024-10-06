@@ -26,8 +26,8 @@ import { colors } from "../../theme";
 import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import axios from "axios";
 import { globalConstant } from "../../constant";
+import CustomCategoryAutocomplete from "../../common/CustomCategoryAutocomplete";
 
 const Index = () => {
   const [shopByUseModalType, setShopByUseModalType] = useState({
@@ -50,6 +50,8 @@ const Index = () => {
   });
   const { isValidArray } = useEmpty();
   const [faq, setFaq] = useState([{ question: "", answer: "" }]);
+  const [categoryData, setCategoryData] = useState({});
+  const [selectedCategoryData, setSelectedCategoryData] = useState({});
 
   // table data columns
   const shopByUsecolumns = [
@@ -64,12 +66,14 @@ const Index = () => {
     },
     {
       name: "Description",
-      minWidth: 250,
       selector: (row) => row?.description || "",
     },
     {
+      name: "Category",
+      selector: (row) => row?.categoryId?.title || "",
+    },
+    {
       name: "FAQ's",
-      minWidth: 250,
       selector: (row) => row?.faq || "",
     },
     {
@@ -79,7 +83,7 @@ const Index = () => {
         (
           <img
             src={row?.image}
-            alt={"shop-by-use-image"}
+            alt={"shop-by-use"}
             width={"150px"}
             style={{ maxHeight: "220px", objectFit: "cover" }}
           />
@@ -132,6 +136,7 @@ const Index = () => {
       image: imageData.imgUrl,
       name: values.name,
       faq: faq,
+      categoryId: selectedCategoryData?._id,
     };
     try {
       const response = await service.shopByUsePage.addShopUse(transformAddData);
@@ -141,6 +146,7 @@ const Index = () => {
         handleToggleModal();
         formik.resetForm();
         handleGetShopByUseData();
+        setSelectedCategoryData({});
       } else {
         toast.error(data?.message, { autoClose: 2000 });
       }
@@ -154,6 +160,7 @@ const Index = () => {
       setFaq(globalConstant.InitialFaqData);
       setShopByUseModalType(globalConstant.InitialModalStateData);
       setImageData(globalConstant.InitialImageData);
+      setSelectedCategoryData({});
       formik.resetForm();
     } else {
       setShopByUseModalType((prev) => ({
@@ -174,6 +181,32 @@ const Index = () => {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
     }
   };
+
+  // function to get the categoryData
+  const handleGetCategoryData = async () => {
+    const queryParams = {
+      limit: 1000,
+    };
+    try {
+      const response = await service.categoryPage.listing(queryParams);
+      if (response.status === 200) {
+        setCategoryData(response?.data?.data);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, { autoClose: 2000 });
+    }
+  };
+
+  // handleCategoryChange
+  const handleCategoryChange = (event, value) => {
+    if (!value) return;
+    setSelectedCategoryData(value);
+  };
+
+  // useEffect to call the api for the categoryData for the first time
+  useEffect(() => {
+    handleGetCategoryData();
+  }, []);
 
   // useEffect to call the api for the first time during first render
   useEffect(() => {
@@ -218,6 +251,7 @@ const Index = () => {
       formik.setFieldValue("name", data.name);
       formik.setFieldValue("description", data.description);
       formik.setFieldValue("id", data._id);
+      setSelectedCategoryData(data?.categoryId);
       setShopByUseModalType({
         isEdit: true,
         isModalOpen: true,
@@ -239,6 +273,7 @@ const Index = () => {
       image: imageData.imgUrl,
       name: values.name,
       faq: faq,
+      categoryId: selectedCategoryData?._id,
     };
     try {
       const response = await service.shopByUsePage.updateShopUse(
@@ -248,6 +283,7 @@ const Index = () => {
       if (data?.status) {
         toast.success(data?.message, { autoClose: 2000 });
         handleToggleModal();
+        setSelectedCategoryData({});
         formik.resetForm();
         handleGetShopByUseData();
       } else {
@@ -290,10 +326,7 @@ const Index = () => {
       const formData = new FormData();
       formData.append("image", file);
       try {
-        const res = await axios.post(
-          "https://api.betterbeout.com/api/v1/image/uploader",
-          formData
-        );
+        const res = await service.imageUploaderService.uploadImage(formData);
 
         if (res.data && res.data.url) {
           setImageData((prev) => ({
@@ -521,6 +554,19 @@ const Index = () => {
                   formik.errors.description
                 }
               />
+              <Box mb={4}>
+                <Typography
+                  variant="label"
+                  sx={{ textTransform: "capitalize", mb: 3 }}
+                >
+                  Category
+                </Typography>
+                <CustomCategoryAutocomplete
+                  value={selectedCategoryData}
+                  handleChange={handleCategoryChange}
+                  optionListData={categoryData?.category}
+                />
+              </Box>
               <Box mb={5}>
                 <Typography
                   variant="label"
@@ -585,6 +631,8 @@ const Index = () => {
                     {imageData?.previewUrl && (
                       <img
                         src={imageData?.previewUrl}
+                        alt={"preview"}
+                        loading="lazy"
                         width={"100%"}
                         style={{ objectFit: "contain" }}
                         height={"100%"}

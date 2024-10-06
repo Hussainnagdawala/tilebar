@@ -8,6 +8,7 @@ import shopByColorPage from "./shopByColorPage";
 import bannerSliderPage from "./bannerSliderPage";
 import imageUploaderService from "./imageUploader";
 import categoryPage from "./categoryPage";
+import productPage from "./productPage";
 
 const service = {
   auth: authService,
@@ -20,5 +21,6 @@ const service = {
   imageUploaderService: imageUploaderService,
   shopByColorServices: shopByColorPage,
   categoryPage: categoryPage,
+  productPage: productPage,
 };
 export default service;
