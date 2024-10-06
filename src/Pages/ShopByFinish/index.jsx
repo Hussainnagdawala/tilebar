@@ -48,7 +48,7 @@ const Index = () => {
   const [faq, setFaq] = useState(globalConstant.InitialFaqData);
 
   // table data columns
-  const shopByUsecolumns = [
+  const shopByFinishcolumns = [
     { name: "#", selector: (row) => row?.index_number ?? 0 },
     {
       name: "Name",
@@ -246,7 +246,7 @@ const Index = () => {
   const handleUpdateShopByFinishData = async (values) => {
     const transformAddData = {
       title: values.title,
-      shopByUseId: values.id,
+      shopByFinishId: values.id,
       description: values.description,
       image: imageData.imgUrl,
       name: values.name,
@@ -274,7 +274,7 @@ const Index = () => {
   // function to handle delete data
   const handleDeleteShopByFinishData = async (id) => {
     const deletedDataId = {
-      shopByUseId: id,
+      shopByFinishId: id,
     };
     try {
       const response = await service.shopByFinishPage.removeShopFinish(
@@ -373,7 +373,7 @@ const Index = () => {
       <Box>
         <CustomTable
           isLoading={!shopByFinishData || !shopByFinishData?.category}
-          columns={shopByUsecolumns}
+          columns={shopByFinishcolumns}
           data={
             isValidArray(shopByFinishData?.category) &&
             shopByFinishData?.category.map((item, index) => ({

@@ -8,7 +8,6 @@ const SvgComponent = () => {
       style={{
         display: "block",
         margin: "auto",
-        background: "#fff",
         borderRadius: "10px",
       }}
     >
