@@ -27,12 +27,15 @@ import { colors } from "../../theme";
 import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { globalConstant } from "../../constant";
+import { useNavigate } from "react-router-dom";
+import { RoutePaths } from "../../routes/RouterPaths";
 
 const Index = () => {
-  const [productModalType, setProductModalType] = useState({
-    isModalOpen: false,
-    isEdit: false,
-  });
+  const [productModalType, setProductModalType] = useState(
+    globalConstant.InitialModalStateData
+  );
+  const navigate = useNavigate();
   const [openDeleteModal, setOpenDeleteModal] = useState({
     isDeleteModalOpen: false,
     deleteId: "",
@@ -43,10 +46,7 @@ const Index = () => {
     limit: 10,
   });
   const [productData, setProductData] = useState({});
-  const [imageData, setImageData] = useState({
-    imgUrl: "",
-    previewUrl: "",
-  });
+  const [imageData, setImageData] = useState(globalConstant.InitialImageData);
   const { isValidArray } = useEmpty();
   // table data columns
   const shopByColorcolumns = [
@@ -142,23 +142,24 @@ const Index = () => {
   //   }
   // };
 
-  const handleToggleModal = () => {
-    if (productModalType.isModalOpen) {
-      setProductModalType((prev) => ({
-        isEdit: false,
-        isModalOpen: false,
-      }));
-      // formik.resetForm();
-      setImageData({
-        imgUrl: "",
-        previewUrl: "",
-      });
-    } else {
-      setProductModalType((prev) => ({
-        ...prev,
-        isModalOpen: !prev.isModalOpen,
-      }));
-    }
+  const handleRedirect = () => {
+    navigate(RoutePaths.addProductPath);
+    // if (productModalType.isModalOpen) {
+    //   setProductModalType((prev) => ({
+    //     isEdit: false,
+    //     isModalOpen: false,
+    //   }));
+    //   // formik.resetForm();
+    //   setImageData({
+    //     imgUrl: "",
+    //     previewUrl: "",
+    //   });
+    // } else {
+    //   setProductModalType((prev) => ({
+    //     ...prev,
+    //     isModalOpen: !prev.isModalOpen,
+    //   }));
+    // }
   };
 
   // function to get the listing of the shop by use data
@@ -307,13 +308,13 @@ const Index = () => {
         <Grid item lg={6}>
           {/* <CustomInput /> */}
         </Grid>
-        <Grid item lg={2}>
+        <Grid item lg={1.5}>
           <CustomButton
             type={"button"}
             startIcon={<AddIcon />}
-            onClick={handleToggleModal}
+            onClick={handleRedirect}
             variant={"contained"}
-            buttonName={"Add Shop By Color"}
+            buttonName={"Add Product"}
           />
         </Grid>
       </Grid>
