@@ -26,6 +26,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import { globalConstant } from "../../constant";
+import CustomCategoryAutocomplete from "../../common/CustomCategoryAutocomplete";
 
 const Index = () => {
   const [sizeModalType, setSizeModalType] = useState({
@@ -41,6 +42,8 @@ const Index = () => {
     globalConstant.InitialQueryParamData
   );
   const [imageData, setImageData] = useState(globalConstant.InitialImageData);
+  const [categoryData, setCategoryData] = useState({});
+  const [selectedCategoryData, setSelectedCategoryData] = useState({});
   // file button input style
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -64,6 +67,10 @@ const Index = () => {
     {
       name: "Size",
       selector: (row) => `${row?.size}` || "",
+    },
+    {
+      name: "Category",
+      selector: (row) => row?.categoryId?.title || "",
     },
     {
       name: "Image",
@@ -121,6 +128,7 @@ const Index = () => {
       title: values.title,
       size: `${values.size1}*${values.size2}`,
       image: imageData.imgUrl,
+      categoryId: selectedCategoryData?._id,
     };
     try {
       const response = await service.sizePage.addSize(transformValue);
@@ -145,6 +153,7 @@ const Index = () => {
       size: `${values.size1}*${values.size2}`,
       sizeId: values.sizeId,
       image: imageData.imgUrl,
+      categoryId: selectedCategoryData?._id,
     };
     try {
       const response = await service.sizePage.updateSize(transformValue);
@@ -183,6 +192,32 @@ const Index = () => {
     }
   };
 
+  // function to get the categoryData
+  const handleGetCategoryData = async () => {
+    const queryParams = {
+      limit: 1000,
+    };
+    try {
+      const response = await service.categoryPage.listing(queryParams);
+      if (response.status === 200) {
+        setCategoryData(response?.data?.data);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, { autoClose: 2000 });
+    }
+  };
+
+  // handleCategoryChange
+  const handleCategoryChange = (event, value) => {
+    if (!value) return;
+    setSelectedCategoryData(value);
+  };
+
+  // useEffect to call the api for the categoryData for the first time
+  useEffect(() => {
+    handleGetCategoryData();
+  }, []);
+
   useEffect(() => {
     handleGetSizeData();
   }, [queryParams]);
@@ -192,6 +227,7 @@ const Index = () => {
     if (sizeModalType.isModalOpen) {
       setImageData(globalConstant.InitialImageData);
       formik.resetForm();
+      setSelectedCategoryData({});
       setSizeModalType(globalConstant.InitialModalStateData);
     } else {
       setSizeModalType((prev) => ({
@@ -210,6 +246,7 @@ const Index = () => {
     formik.setFieldValue("size1", size1);
     formik.setFieldValue("size2", size2);
     formik.setFieldValue("sizeId", _id);
+    setSelectedCategoryData(data?.categoryId);
     setImageData({
       imgUrl: image,
       previewUrl: image,
@@ -436,6 +473,19 @@ const Index = () => {
                   }
                 />
               </Stack>
+              <Box mb={4}>
+                <Typography
+                  variant="label"
+                  sx={{ textTransform: "capitalize", mb: 3 }}
+                >
+                  Category
+                </Typography>
+                <CustomCategoryAutocomplete
+                  value={selectedCategoryData}
+                  handleChange={handleCategoryChange}
+                  optionListData={categoryData?.category}
+                />
+              </Box>
               <Box mb={5}>
                 <Typography
                   variant="label"

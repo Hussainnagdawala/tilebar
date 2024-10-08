@@ -29,6 +29,7 @@ export const CustomInput = ({
   multiline = false,
   rows = 4,
   helperText,
+  min = 0,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -78,6 +79,7 @@ export const CustomInput = ({
           multiline={multiline}
           type={showPassword ? "text" : type}
           value={value}
+          min={type === "number" && min}
           helperText={error && helperText}
           onChange={handleChange}
           disabled={disabled}
