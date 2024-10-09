@@ -5,6 +5,8 @@ import { style } from "./style";
 
 export const AppSpinner = () => (
   <Box sx={style.loaderBox}>
-    <LoaderSpinner />
+    <Box>
+      <LoaderSpinner />
+    </Box>
   </Box>
 );

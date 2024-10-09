@@ -42,7 +42,7 @@ const LoginForm = () => {
         const data = response?.data?.data;
         add("admin_token", data.token);
         add("admin_detail", data.adminDetail);
-        navigate(RoutePaths.categoryPath);
+        navigate(RoutePaths.dashboardPath);
         toast.success("Login successful!", {
           autoClose: 2000,
         });

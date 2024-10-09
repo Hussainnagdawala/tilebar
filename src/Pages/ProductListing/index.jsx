@@ -74,8 +74,8 @@ const Index = () => {
           <img
             src={row?.images[0]}
             alt={"shop-by-use-image"}
-            width={"150px"}
-            style={{ maxHeight: "220px", objectFit: "contain" }}
+            width={"100px"}
+            style={{ maxHeight: "180px", objectFit: "contain" }}
           />
         ) || "",
     },
@@ -308,7 +308,7 @@ const Index = () => {
         <Grid item lg={6}>
           {/* <CustomInput /> */}
         </Grid>
-        <Grid item lg={1.5}>
+        <Grid item lg={2}>
           <CustomButton
             type={"button"}
             startIcon={<AddIcon />}

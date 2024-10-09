@@ -32,6 +32,7 @@ export const CustomButton = ({
           ...styles.buttonStyle,
           backgroundColor: buttonColor,
           "&:hover": { backgroundColor: buttonColor },
+          ...sx,
         }}
       >
         {buttonName}

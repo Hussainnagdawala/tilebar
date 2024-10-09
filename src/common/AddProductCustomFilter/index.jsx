@@ -21,15 +21,14 @@ const CommonFilterComponent = ({
   inputName = "name",
   title = "Select Options from Below",
 }) => {
-  const [searchFilterData, setSearchFilterData] = useState([]);
-  const [selectedData, setSelectedData] = useState([]);
+  const [searchFilterData, setSearchFilterData] = useState(initialData);
+  const [selectedData, setSelectedData] = useState(initialSelectedData);
   const { isValidArray } = useEmpty();
 
-  // Initialize selected data and search data on load or when props change
+  // Update searchFilterData only when initialData changes
   useEffect(() => {
     setSearchFilterData(initialData);
-    setSelectedData(initialSelectedData);
-  }, [initialData, initialSelectedData]);
+  }, [initialData]);
 
   // Function to filter the search input
   const handleCustomFilter = (e) => {
@@ -46,8 +45,7 @@ const CommonFilterComponent = ({
     if (!isDataPresent) {
       const updatedSelectedData = [...selectedData, data];
       setSelectedData(updatedSelectedData);
-      onSelectionChange &&
-        onSelectionChange(updatedSelectedData.map((item) => item._id));
+      onSelectionChange(updatedSelectedData.map((item) => item._id));
     }
   };
 
@@ -57,20 +55,20 @@ const CommonFilterComponent = ({
       (item) => item._id !== data._id
     );
     setSelectedData(updatedSelectedData);
-    onSelectionChange &&
-      onSelectionChange(updatedSelectedData.map((item) => item._id));
+    onSelectionChange(updatedSelectedData.map((item) => item._id));
   };
 
   const unselectedItems = searchFilterData.filter(
     (item) => !selectedData.some((selected) => selected._id === item._id)
   );
+
   return (
     <Box>
       <CustomInput
         label={inputLabel}
         handleChange={handleCustomFilter}
         placeholder={inputPlaceholder}
-        type={"text"}
+        type="text"
         name={inputName}
       />
       <Grid
@@ -106,19 +104,17 @@ const CommonFilterComponent = ({
               }
             >
               {isValidArray(unselectedItems) ? (
-                unselectedItems.map((item) => {
-                  return (
-                    <ListItemButton
-                      key={item.id}
-                      onClick={() => handleSelectedData(item)}
-                    >
-                      <ListItemText primary={item.title} />
-                    </ListItemButton>
-                  );
-                })
+                unselectedItems.map((item) => (
+                  <ListItemButton
+                    key={item.id}
+                    onClick={() => handleSelectedData(item)}
+                  >
+                    <ListItemText primary={item.title} />
+                  </ListItemButton>
+                ))
               ) : (
                 <ListItemButton disabled>
-                  <ListItemText primary={"no options left"} />
+                  <ListItemText primary="No options left" />
                 </ListItemButton>
               )}
             </List>
