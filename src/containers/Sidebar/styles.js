@@ -1,3 +1,5 @@
+import { colors } from "../../theme";
+
 const drawerWidth = "260px";
 
 export const sidebarStyles = {
@@ -6,13 +8,13 @@ export const sidebarStyles = {
     width: drawerWidth,
     flexShrink: 0,
     "& .MuiDrawer-paper": {
-      background : '#fffadf',
+      background: colors.primary.main,
       // background: "#635d4f",
       // background: colors.primary.main,
       width: drawerWidth,
       boxSizing: "border-box",
       border: 0,
-      boxShadow: "0 5px 10px 0 rgba(34, 34, 34, 0.15)",
+      boxShadow: "0 5px 10px 0 rgba(34, 34, 34, 0.45)",
     },
   },
   toolbarStyles: {

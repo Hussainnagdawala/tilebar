@@ -11,7 +11,7 @@ export const appStyles = {
   //styes for text
 
   textColorBlack: {
-    color: "black.main",
+    color: "white.main",
   },
 
   // styles for boxShadow

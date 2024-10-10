@@ -65,14 +65,14 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
                     borderRadius: "10px",
                     mb: 3,
                     background: HandleMatchPathActive(item.path)
-                      ? colors.primary.main
+                      ? colors.secondary.light
                       : "transparent",
                     color: HandleMatchPathActive(item.path)
-                      ? colors.white.main
-                      : colors.primary.main,
+                      ? colors.primary.main
+                      : colors.white.main,
                     "&:hover": {
                       background:
-                        HandleMatchPathActive(item.path) && colors.primary.main,
+                        HandleMatchPathActive(item.path) && colors.secondary.light,
                     },
                   }}
                   onClick={() => handleMenuItemClick(item)}
@@ -90,8 +90,8 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
                         height="30px"
                         sx={{
                           color: HandleMatchPathActive(item.path)
-                            ? colors.white.main
-                            : colors.primary.main,
+                            ? colors.primary.main
+                            : colors.secondary.light,
                         }}
                       />
                     </ListItemIcon>

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Grid,
-  IconButton,
-  Stack,
-  styled,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, IconButton, Stack, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   AppModal,
@@ -24,17 +16,10 @@ import { toast } from "react-toastify";
 import { useEmpty } from "../../hooks";
 import { CloseIcon } from "../../assets";
 import { colors } from "../../theme";
-import UploadRoundedIcon from "@mui/icons-material/UploadRounded";
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { globalConstant } from "../../constant";
 import { useNavigate } from "react-router-dom";
 import { RoutePaths } from "../../routes/RouterPaths";
 
 const Index = () => {
-  const [productModalType, setProductModalType] = useState(
-    globalConstant.InitialModalStateData
-  );
   const navigate = useNavigate();
   const [openDeleteModal, setOpenDeleteModal] = useState({
     isDeleteModalOpen: false,
@@ -46,7 +31,6 @@ const Index = () => {
     limit: 10,
   });
   const [productData, setProductData] = useState({});
-  const [imageData, setImageData] = useState(globalConstant.InitialImageData);
   const { isValidArray } = useEmpty();
   // table data columns
   const shopByColorcolumns = [
@@ -82,84 +66,8 @@ const Index = () => {
     { name: "Action", selector: (row) => row?.action ?? "" },
   ];
 
-  // file button input style
-  // const VisuallyHiddenInput = styled("input")({
-  //   clip: "rect(0 0 0 0)",
-  //   clipPath: "inset(50%)",
-  //   height: 1,
-  //   overflow: "hidden",
-  //   position: "absolute",
-  //   bottom: 0,
-  //   left: 0,
-  //   whiteSpace: "nowrap",
-  //   width: 1,
-  // });
-
-  // formik configuration
-  // const formik = useFormik({
-  //   initialValues: {
-  //     title: "",
-  //     description: "",
-  //     image: "",
-  //     id: "",
-  //   },
-  //   validationSchema: yup.object({
-  //     title: yup.string().required("title is required"),
-  //     description: yup.string().required("description is required"),
-  //   }),
-  //   onSubmit: (values) => {
-  //     if (productModalType.isEdit) {
-  //       // handleUpdateproductData(values);
-  //     } else {
-  //       // handleAddByShopColor(values);
-  //     }
-  //   },
-  // });
-
-  // function to Add shop by use data
-  // const handleAddByShopColor = async (values) => {
-  //   const transformAddData = {
-  //     title: values.title,
-  //     description: values.description,
-  //     image: imageData.imgUrl,
-  //     name: values.name,
-  //   };
-  //   try {
-  //     const response = await service.shopByColorServices.addShopColor(
-  //       transformAddData
-  //     );
-  //     const data = response?.data;
-  //     if (data?.status) {
-  //       toast.success(data?.message, { autoClose: 2000 });
-  //       handleToggleModal();
-  //       formik.resetForm();
-  //       handleGetProductData();
-  //     } else {
-  //       toast.error(data?.message, { autoClose: 2000 });
-  //     }
-  //   } catch (error) {
-  //     toast.error(error?.response?.data?.message, { autoClose: 2000 });
-  //   }
-  // };
-
   const handleRedirect = () => {
     navigate(RoutePaths.addProductPath);
-    // if (productModalType.isModalOpen) {
-    //   setProductModalType((prev) => ({
-    //     isEdit: false,
-    //     isModalOpen: false,
-    //   }));
-    //   // formik.resetForm();
-    //   setImageData({
-    //     imgUrl: "",
-    //     previewUrl: "",
-    //   });
-    // } else {
-    //   setProductModalType((prev) => ({
-    //     ...prev,
-    //     isModalOpen: !prev.isModalOpen,
-    //   }));
-    // }
   };
 
   // function to get the listing of the shop by use data
@@ -179,63 +87,17 @@ const Index = () => {
     handleGetProductData(queryParams);
   }, [queryParams]);
 
-  // function to handle Edit of single shop by use data
-  // const handleEditproductData = (data) => {
-  //   if (data) {
-  //     formik.setFieldValue("title", data.title);
-  //     formik.setFieldValue("name", data.name);
-  //     formik.setFieldValue("description", data.description);
-  //     formik.setFieldValue("id", data._id);
-  //     setProductModalType({
-  //       isEdit: true,
-  //       isModalOpen: true,
-  //     });
-  //     setImageData({
-  //       imgUrl: data.image,
-  //       previewUrl: data.image,
-  //     });
-  //   }
-  // };
-
-  // function to handle update of single shop by use data
-  // const handleUpdateproductData = async (values) => {
-  //   const transformAddData = {
-  //     title: values.title,
-  //     colorId: values.id,
-  //     description: values.description,
-  //     image: imageData.imgUrl,
-  //   };
-  //   try {
-  //     const response = await service.shopByColorServices.updateShopColor(
-  //       transformAddData
-  //     );
-  //     const data = response?.data;
-  //     if (data?.status) {
-  //       toast.success(data?.message, { autoClose: 2000 });
-  //       handleToggleModal();
-  //       formik.resetForm();
-  //       handleGetProductData();
-  //     } else {
-  //       toast.error(data?.message, { autoClose: 2000 });
-  //     }
-  //   } catch (error) {
-  //     toast.error(error?.response?.data?.message, { autoClose: 2000 });
-  //   }
-  // };
-
   // function to handle delete data
   const handleDeleteproductData = async (id) => {
     const deletedDataId = {
-      colorId: id,
+      productId: id,
     };
     try {
-      const response = await service.shopByColorServices.removeShopColor(
-        deletedDataId
-      );
+      const response = await service.productPage.removeProduct(deletedDataId);
       const data = response?.data;
       if (data?.status) {
-        toast.success(data?.message, { autoClose: 2000 });
         handleGetProductData();
+        toast.success(data?.message, { autoClose: 2000 });
         setOpenDeleteModal({ isDeleteModalOpen: false, deleteId: "" });
       } else {
         toast.error(data?.message, { autoClose: 2000 });
@@ -244,33 +106,6 @@ const Index = () => {
       toast.error(error?.response?.data?.message, { autoClose: 2000 });
     }
   };
-
-  // function to handle image upload verification=
-  // const handleFileUpload = async (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     const blobUrl = URL.createObjectURL(file);
-  //     setImageData((prev) => ({
-  //       ...prev,
-  //       previewUrl: blobUrl,
-  //     }));
-  //     const formData = new FormData();
-  //     formData.append("image", file);
-  //     try {
-  //       const res = await service.imageUploaderService.uploadImage(formData);
-  //       if (res.data && res.data.url) {
-  //         setImageData((prev) => ({
-  //           ...prev,
-  //           imgUrl: res.data.url,
-  //         }));
-  //       } else {
-  //         toast.error("Image upload response does not contain URL.");
-  //       }
-  //     } catch (error) {
-  //       toast.error("Failed to upload image");
-  //     }
-  //   }
-  // };
 
   const handleDelete = (values) => {
     setOpenDeleteModal((prev) => ({
@@ -339,7 +174,7 @@ const Index = () => {
                   <IconButton
                     aria-label="Edit"
                     color="success"
-                    // onClick={() => handleEditproductData(item)}
+                    onClick={() => navigate(`/product/edit/${item?._id}`)}
                     sx={{
                       borderRadius: "10px",
                       border: `1px solid`,
@@ -383,161 +218,6 @@ const Index = () => {
           handlePageChange={handleOnPageChange}
         />
       </Box>
-      {/* {productModalType.isModalOpen && (
-        <AppModal
-          open={productModalType.isModalOpen}
-          maxWidth={"sm"}
-          handleCloseOpen={handleToggleModal}
-        >
-          <Box>
-            <Box
-              sx={{
-                background: colors.white.main,
-                zIndex: 99,
-                px: 5,
-                py: 3,
-                position: "sticky",
-                top: 0,
-                borderBottom: `2px solid ${colors.bottedBorder.main}`,
-                borderBottomStyle: "dashed",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="title">
-                  {productModalType.isEdit
-                    ? "Edit Shop By Color Details"
-                    : "Add Shop By Color"}
-                </Typography>
-
-                <IconButton onClick={handleToggleModal}>
-                  <CloseIcon />
-                </IconButton>
-              </Box>
-            </Box>
-             <Box p={5} component={"form"} onSubmit={formik.handleSubmit}> 
-              <CustomInput
-                name={"title"}
-                label={"Title"}
-                handleChange={formik.handleChange}
-                placeholder={"enter your title"}
-                value={formik.values.title}
-                type={"text"}
-                error={formik.errors.title}
-                helperText={
-                  Boolean(formik.touched.title) && formik.errors.title
-                }
-              />
-              <CustomInput
-                name={"description"}
-                label={"Description"}
-                handleChange={formik.handleChange}
-                placeholder={"enter description"}
-                value={formik.values.description}
-                multiline={true}
-                rows={4}
-                type={"text"}
-                error={formik.errors.description}
-                helperText={
-                  Boolean(formik.touched.description) &&
-                  formik.errors.description
-                }
-              />
-              <Box mb={5}>
-                <Typography
-                  variant="label"
-                  sx={{ textTransform: "capitalize", mb: 3 }}
-                >
-                  Image
-                </Typography>
-                <Grid container gap={3} alignItems={"center"}>
-                  <Grid item xs={5.5}>
-                    <Button
-                      component="label"
-                      role={undefined}
-                      variant="outlined"
-                      tabIndex={-1}
-                      sx={{
-                        width: "100%",
-                        p: 10,
-                        borderRadius: "10px",
-                        border: `2px dashed ${colors.darkGray.main}`,
-                        "&:hover": {
-                          border: `2px dashed ${colors.darkGray.main}`,
-                        },
-                      }}
-                    >
-                      <Box textAlign={"center"}>
-                        <UploadRoundedIcon
-                          sx={{
-                            fontSize: "60px",
-                            mb: 2,
-                          }}
-                        />
-                        <Typography
-                          variant="h6"
-                          textTransform={"capitalize"}
-                          sx={{
-                            fontSize: "20px",
-                            mb: 1,
-                          }}
-                        >
-                          {imageData?.previewUrl
-                            ? "Choose another"
-                            : " Click to Upload"}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          textTransform={"capitalize"}
-                          sx={{
-                            color: colors.darkGray.main,
-                          }}
-                        >
-                          supported formats JPG, PNG ,JPEG
-                        </Typography>
-                      </Box>
-                      <VisuallyHiddenInput
-                        type="file"
-                        accept=".jpg , .png , .jpeg"
-                        // onChange={handleFileUpload}
-                      />
-                    </Button>
-                  </Grid>
-                  <Grid item xs={5.5} sx={{ objectFit: "contain" }}>
-                    {imageData?.previewUrl && (
-                      <img
-                        src={imageData?.previewUrl}
-                        width={"100%"}
-                        style={{ objectFit: "contain" }}
-                        height={"100%"}
-                      />
-                    )}
-                  </Grid>
-                </Grid>
-              </Box>
-              {productModalType.isEdit ? (
-                <CustomButton
-                  variant={"contained"}
-                  type="submit"
-                  buttonName={"Update"}
-                />
-              ) : (
-                <CustomButton
-                  variant={"contained"}
-                  type="submit"
-                  buttonName={"Submit"}
-                />
-              )}
-            </Box>
-          </Box>
-        </AppModal>
-      )} */}
-
       {openDeleteModal.isDeleteModalOpen && (
         <AppModal
           open={openDeleteModal.isDeleteModalOpen}

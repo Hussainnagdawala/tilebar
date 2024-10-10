@@ -10,7 +10,7 @@ export const headerStyles = {
       ...appStyles.noBoxShadow,
       ...appStyles.borderbottom,
       ...appStyles.borderColorSecondary,
-      background: "#fffadf",
+      background: colors.primary.main,
       width: {
         xs: "100%",
         md: fullWidthHeader ? `calc(100% - ${drawerWidth})` : "100%",
@@ -37,6 +37,7 @@ export const headerStyles = {
     ...appStyles.textColorBlack,
   },
   hamburgerButton: {
+    ...appStyles.textColorBlack,
     pr: 2,
     display: { md: "none" },
   },
@@ -50,7 +51,7 @@ export const headerStyles = {
   profileSubhead: {
     display: { xs: "none", md: "block" },
     fontWeight: 500,
-    color: colors.darkGray.main,
+    color: "#cecece",
     // color: "#fff",
     fontSize: { xs: ".75rem", md: "initial" },
     lineHeight: { xs: "normal", md: "initial" },

@@ -4,7 +4,6 @@ import { AppModal, CustomButton, CustomInput } from "../../common";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { CloseIcon } from "../../assets";
-import { Grade, Label } from "@material-ui/icons";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Box,
@@ -14,7 +13,6 @@ import {
   IconButton,
   Autocomplete,
   Typography,
-  styled,
 } from "@mui/material";
 import service from "../../api/services";
 import { colors } from "../../theme";
@@ -23,6 +21,7 @@ import { toast } from "react-toastify";
 import CommonFilterComponent from "../../common/AddProductCustomFilter";
 import { useEmpty } from "../../hooks";
 import { globalConstant } from "../../constant";
+import { addProductStyles, VisuallyHiddenInput } from "./styles";
 import { RoutePaths } from "../../routes/RouterPaths";
 const Index = () => {
   const { id } = useParams();
@@ -45,9 +44,17 @@ const Index = () => {
     byUse: [],
     byFinish: [],
   });
+  const [selectedDataObject, setSelectedDataObject] = useState({
+    size: [],
+    byLook: [],
+    byUse: [],
+    byFinish: [],
+  });
   const [imageData, setImageData] = useState(globalConstant.InitialImageData);
   const [productImageData, setProductImageData] = useState([]);
   const { isValidArray } = useEmpty();
+
+  // yup validation schema
   const validationSchema = yup.object({
     name: yup.string().required("Name is required"),
     description: yup.string().required("Description is required"),
@@ -62,6 +69,7 @@ const Index = () => {
       .matches(/^\d+$/, "Enter a valid number"),
   });
 
+  // formik instance
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -72,14 +80,20 @@ const Index = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      handleAddProductDataApi(values);
+      if (!id) {
+        handleAddProductDataApi(values);
+      } else {
+        handleUpdateProductDataApi(values);
+      }
     },
   });
+
+  // function to handle the add product
   const handleAddProductDataApi = async (values) => {
     const payload = {
       ...values,
       ...selectedIdOfSubCategory,
-      categoryId: [selectedCategoryData],
+      categoryId: [selectedCategoryData._id],
       images: productImageData,
       colors: selectedColor,
     };
@@ -94,18 +108,28 @@ const Index = () => {
       toast.error("something went wrong", { autoClose: 2000 });
     }
   };
-  // file button input style
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
+
+  // function to handle the update product
+  const handleUpdateProductDataApi = async (values) => {
+    const payload = {
+      ...values,
+      ...selectedIdOfSubCategory,
+      categoryId: [selectedCategoryData._id],
+      images: productImageData,
+      colors: selectedColor,
+      productId: id,
+    };
+    try {
+      const response = await service.productPage.updateProduct(payload);
+      if (response?.data?.status) {
+        toast.success(response?.data?.message, { autoClose: 2000 });
+        formik.resetForm();
+        navigate(RoutePaths.productPath);
+      } else toast.error(response?.data?.message, { autoClose: 2000 });
+    } catch (error) {
+      toast.error("something went wrong in edit api", { autoClose: 2000 });
+    }
+  };
 
   // function to get the listing of the shop by color data
   const handleGetShopByColorData = async () => {
@@ -191,6 +215,84 @@ const Index = () => {
     handleGetCategoryData();
   }, []);
 
+  const getSingleProductData = async (id) => {
+    try {
+      const response = await service.productPage.productDetail({
+        productId: id,
+      });
+      const data = response?.data;
+      if (data.status) {
+        // Extract the product details from the response data.
+        const EditData = data?.data;
+
+        // Map the colors to a format suitable for form fields.
+        const colors = EditData?.colors.map((item) => ({
+          colorId: item?._id,
+          label: item?.title,
+          image: item?.image,
+        }));
+
+        // Extract IDs from various product attributes for editing purposes.
+        const byLookId = EditData?.byLooks.map((item) => item?._id);
+        const byUseId = EditData?.byUse.map((item) => item?._id);
+        const size = EditData?.sizes.map((item) => item?._id);
+        const byFinishId = EditData?.byFinish.map((item) => item?._id);
+
+        // Prepare the category data by extracting the first category's details.
+        const categoryData = {
+          ...EditData?.categories[0],
+          label: EditData?.categories[0]?.title,
+          id: EditData?.categories[0]?._id,
+        };
+
+        // Populate form fields with the fetched product details.
+        formik.setFieldValue("description", EditData?.description);
+        formik.setFieldValue("name", EditData?.name);
+        formik.setFieldValue("unit", EditData?.unit);
+        formik.setFieldValue("inventory", EditData?.inventory);
+        formik.setFieldValue("price", EditData?.price);
+
+        // Set product image data for display.
+        setProductImageData(EditData?.images);
+
+        // Set the selected category data for the product.
+        setSelectedCategoryData(categoryData);
+
+        // Set the selected colors for the product.
+        setSelectedColor(colors);
+
+        // Update the selected data object to show selected data in shop bys slected options
+        setSelectedDataObject({
+          ...selectedDataObject,
+          byLook: EditData.byLooks,
+          byFinish: EditData.byFinish,
+          size: EditData.sizes,
+          byUse: EditData.byUse,
+        });
+
+        // Update the selected sub-category IDs to sync with the data seleted as this object directly goes in add/update api which only takes id .
+        setSelectedIdOfSubCategory({
+          byLook: byLookId,
+          byFinish: byFinishId,
+          byUse: byUseId,
+          size: size,
+        });
+      } else {
+        toast.error(data?.message, { autoClose: 2000 });
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message, { autoClose: 2000 });
+    }
+  };
+
+  // this useEffect run and fetch data only when the user is editing the product to get the edited data
+  useEffect(() => {
+    if (id) {
+      getSingleProductData(id);
+    }
+  }, [id]);
+
+  // toggling the drawer open/close
   const handleToggleModal = () => {
     if (addColorImageModal.isModalOpen) {
       setAddColorImageModal((prev) => ({
@@ -205,6 +307,7 @@ const Index = () => {
     }
   };
 
+  //  function to get the seleted color and open the modal to upload the image of that color
   const handleSelectedColor = (e, value) => {
     if (value && value?.label) {
       setAddColorImageModal({
@@ -214,6 +317,7 @@ const Index = () => {
     }
   };
 
+  // function to handle the file/image upload for the color image by opening the dropdown
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -252,6 +356,7 @@ const Index = () => {
     }
   };
 
+  // function to handle product file/or image upload
   const handleProductFileUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -270,6 +375,7 @@ const Index = () => {
     }
   };
 
+  // function to handle product delete selected image
   const handleProductDeleteImage = (imgUrl) => {
     if (!imgUrl) return;
     const filterOutDeletedImageData = productImageData.filter(
@@ -278,6 +384,7 @@ const Index = () => {
     setProductImageData(filterOutDeletedImageData);
   };
 
+  // common image upload api to get image url
   const handleImageUploadApi = async (formData) => {
     try {
       const res = await service.imageUploaderService.uploadImage(formData);
@@ -287,6 +394,7 @@ const Index = () => {
     }
   };
 
+  // function to handle delete in selected color data
   const handleDeleteSelectedColorData = (deleteData) => {
     if (!deleteData) return;
     const filterSelectedColor = selectedColor.filter(
@@ -295,29 +403,24 @@ const Index = () => {
     setSelectedColor(filterSelectedColor);
   };
 
+  // function to handlecategory selection
   const handleCategorySelectedData = (e, value) => {
     if (!value) return;
-    // const isValuePresent = selectedCategoryData.some(
-    //   (subitem) => subitem === item._id
-    // );
-    // if (isValuePresent) {
-    setSelectedCategoryData(value._id);
-    // }
+
+    setSelectedCategoryData(value);
   };
 
-  // const uniqueCategoryOptions = categoryData.filter(
-  //   (item) => !selectedCategoryData.some((subitem) => subitem === item._id)
-  // );
-
+  // filtering the data to get only the option which are not selected
   const UniqueData = shopByColorData.filter(
     (item) => !selectedColor.some((subitem) => subitem.colorId === item._id)
   );
+
   return (
     <>
       <Box mb={5}>
         <form onSubmit={formik.handleSubmit}>
           <Grid container spacing={3} mb={5} justifyContent={"center"}>
-            <Grid item md={4}>
+            <Grid item xs={6} md={4}>
               <CustomInput
                 name={"name"}
                 value={formik.values.name}
@@ -329,7 +432,7 @@ const Index = () => {
                 helperText={Boolean(formik.touched.name) && formik.errors.name}
               />
             </Grid>
-            <Grid item md={4}>
+            <Grid item xs={6} md={4}>
               <CustomInput
                 name={"description"}
                 value={formik.values.description}
@@ -344,7 +447,7 @@ const Index = () => {
                 }
               />
             </Grid>
-            <Grid item md={4}>
+            <Grid item xs={6} md={4}>
               <Box mb={1.3}>
                 <Typography
                   variant="label"
@@ -355,20 +458,9 @@ const Index = () => {
               </Box>
               <Autocomplete
                 disablePortal
+                value={selectedCategoryData}
                 onChange={handleCategorySelectedData}
-                sx={{
-                  "& fieldset": {
-                    borderRadius: "10px",
-                    borderColor: colors.primary.main,
-                  },
-                  "& input": {
-                    fontSize: "14px",
-                    "&::placeholder": {
-                      color: `rgba(0,0,0,0.5)`,
-                      opacity: 1,
-                    },
-                  },
-                }}
+                sx={addProductStyles.autocompleteColorStyle}
                 options={
                   isValidArray(categoryData)
                     ? categoryData.map((item) => {
@@ -380,21 +472,8 @@ const Index = () => {
                   <TextField {...params} placeholder="select category" />
                 )}
               ></Autocomplete>
-              {/* <CustomInput
-                name={"inventory"}
-                value={formik.values.inventory}
-                handleChange={formik.handleChange}
-                label={"Inventory"}
-                min={0}
-                placeholder={"Enter inventory like sq"}
-                type={"number"}
-                error={formik.errors.inventory}
-                helperText={
-                  Boolean(formik.touched.inventory) && formik.errors.inventory
-                }
-              /> */}
             </Grid>
-            <Grid item md={3}>
+            <Grid item xs={6} md={3}>
               <CustomInput
                 name={"unit"}
                 value={formik.values.unit}
@@ -407,7 +486,7 @@ const Index = () => {
               />
             </Grid>
 
-            <Grid item md={3}>
+            <Grid item xs={4} md={3}>
               <CustomInput
                 name={"inventory"}
                 value={formik.values.inventory}
@@ -422,7 +501,7 @@ const Index = () => {
                 }
               />
             </Grid>
-            <Grid item md={3}>
+            <Grid item xs={4} md={3}>
               <CustomInput
                 name={"price"}
                 value={formik.values.price}
@@ -437,7 +516,7 @@ const Index = () => {
                 }
               />
             </Grid>
-            <Grid item md={3}>
+            <Grid item xs={4} md={3}>
               <Box mb={1.3}>
                 <Typography
                   variant="label"
@@ -448,19 +527,7 @@ const Index = () => {
               </Box>
               <Autocomplete
                 disablePortal
-                sx={{
-                  "& fieldset": {
-                    borderRadius: "10px",
-                    borderColor: colors.primary.main,
-                  },
-                  "& input": {
-                    fontSize: "14px",
-                    "&::placeholder": {
-                      color: `rgba(0,0,0,0.5)`,
-                      opacity: 1,
-                    },
-                  },
-                }}
+                sx={addProductStyles.autocompleteColorStyle}
                 onChange={handleSelectedColor}
                 options={
                   isValidArray(UniqueData)
@@ -505,10 +572,8 @@ const Index = () => {
                           onClick={() => handleDeleteSelectedColorData(item)}
                           color="primary"
                           sx={{
-                            background: colors.white.main,
-                            position: "absolute",
-                            right: "10px",
-                            top: "10px",
+                            ...addProductStyles.deleteButtonStyle,
+                            top: "20px",
                           }}
                         >
                           <DeleteIcon />
@@ -518,10 +583,10 @@ const Index = () => {
                   })}
               </Grid>
             </Grid>
-            <Grid item md={6}>
+            <Grid item xs={6} md={6}>
               <CommonFilterComponent
                 initialData={shopByUseData}
-                initialSelectedData={[]}
+                initialSelectedData={selectedDataObject.byUse}
                 inputLabel="Select By Use"
                 inputPlaceholder="search option"
                 inputName="Select By Use"
@@ -534,10 +599,10 @@ const Index = () => {
                 title="Select Options from Below"
               />
             </Grid>
-            <Grid item md={6}>
+            <Grid item xs={6} md={6}>
               <CommonFilterComponent
                 initialData={shopByLookData}
-                initialSelectedData={[]}
+                initialSelectedData={selectedDataObject.byLook}
                 inputLabel="Select By Look"
                 inputPlaceholder="search option"
                 inputName="Select By Look"
@@ -550,10 +615,10 @@ const Index = () => {
                 title="Select Options from Below"
               />
             </Grid>
-            <Grid item md={6}>
+            <Grid item xs={6} md={6}>
               <CommonFilterComponent
                 initialData={shopByFinishData}
-                initialSelectedData={[]}
+                initialSelectedData={selectedDataObject.byFinish}
                 inputLabel="Select By Finish"
                 inputPlaceholder="search option"
                 inputName="Select By Finish"
@@ -566,10 +631,10 @@ const Index = () => {
                 title="Select Options from Below"
               />
             </Grid>
-            <Grid item md={6}>
+            <Grid item xs={6} md={6}>
               <CommonFilterComponent
                 initialData={sizesData}
-                initialSelectedData={[]}
+                initialSelectedData={selectedDataObject.size}
                 inputLabel="Select By Size"
                 inputPlaceholder="search option"
                 inputName="Select By Size"
@@ -595,7 +660,7 @@ const Index = () => {
                 {isValidArray(productImageData) &&
                   productImageData.map((imgUrl) => {
                     return (
-                      <Grid item xs={2} sx={{}}>
+                      <Grid item xs={4} md={2} minHeight={"180px"}>
                         <Box
                           sx={{
                             background: `url(${imgUrl})`,
@@ -611,10 +676,8 @@ const Index = () => {
                             onClick={() => handleProductDeleteImage(imgUrl)}
                             color="primary"
                             sx={{
-                              background: colors.white.main,
-                              position: "absolute",
-                              right: "10px",
-                              top: 0,
+                              ...addProductStyles.deleteButtonStyle,
+                              top: "5px",
                             }}
                           >
                             <DeleteIcon />
@@ -623,21 +686,13 @@ const Index = () => {
                       </Grid>
                     );
                   })}
-                <Grid item xs={2}>
+                <Grid item xs={4} md={2}>
                   <Button
                     component="label"
                     role={undefined}
                     variant="outlined"
                     tabIndex={-1}
-                    sx={{
-                      width: "100%",
-                      p: 6,
-                      borderRadius: "10px",
-                      border: `2px dashed ${colors.darkGray.main}`,
-                      "&:hover": {
-                        border: `2px dashed ${colors.darkGray.main}`,
-                      },
-                    }}
+                    sx={addProductStyles.uploadImageButton}
                   >
                     <Box textAlign={"center"}>
                       <UploadRoundedIcon
@@ -680,7 +735,7 @@ const Index = () => {
             <CustomButton
               type="submit"
               variant="contained"
-              buttonName="Submit"
+              buttonName={id ? "Update" : "Submit"}
               sx={{ width: "70% !important" }}
             />
           </Box>
@@ -693,18 +748,7 @@ const Index = () => {
           handleCloseOpen={handleToggleModal}
         >
           <Box>
-            <Box
-              sx={{
-                background: colors.white.main,
-                zIndex: 99,
-                px: 5,
-                py: 3,
-                position: "sticky",
-                top: 0,
-                borderBottom: `2px solid ${colors.bottedBorder.main}`,
-                borderBottomStyle: "dashed",
-              }}
-            >
+            <Box sx={addProductStyles.modalHeadingStyle}>
               <Box
                 sx={{
                   display: "flex",
@@ -733,15 +777,7 @@ const Index = () => {
                     role={undefined}
                     variant="outlined"
                     tabIndex={-1}
-                    sx={{
-                      width: "100%",
-                      p: 10,
-                      borderRadius: "10px",
-                      border: `2px dashed ${colors.darkGray.main}`,
-                      "&:hover": {
-                        border: `2px dashed ${colors.darkGray.main}`,
-                      },
-                    }}
+                    sx={addProductStyles.uploadImageButton}
                   >
                     <Box textAlign={"center"}>
                       <UploadRoundedIcon
@@ -758,9 +794,7 @@ const Index = () => {
                           mb: 1,
                         }}
                       >
-                        {imageData?.previewUrl
-                          ? "Choose another"
-                          : " Click to Upload"}
+                        Click to Upload
                       </Typography>
                       <Typography
                         variant="body2"
