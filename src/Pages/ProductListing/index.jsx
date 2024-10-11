@@ -10,10 +10,11 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import service from "../../api/services";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { toast } from "react-toastify";
-import { useEmpty } from "../../hooks";
+import { useDebounce, useEmpty } from "../../hooks";
 import { CloseIcon } from "../../assets";
 import { colors } from "../../theme";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +22,9 @@ import { RoutePaths } from "../../routes/RouterPaths";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState("");
+  const debounceValue = useDebounce(searchValue, 500);
+  console.log("debounceValue", debounceValue);
   const [openDeleteModal, setOpenDeleteModal] = useState({
     isDeleteModalOpen: false,
     deleteId: "",
@@ -42,6 +46,10 @@ const Index = () => {
     {
       name: "Description",
       selector: (row) => row?.description || "",
+    },
+    {
+      name: "Published",
+      selector: (row) => row?.status || "",
     },
     {
       name: "Inventory",
@@ -84,8 +92,12 @@ const Index = () => {
 
   // useEffect to call the api for the first time during first render
   useEffect(() => {
-    handleGetProductData(queryParams);
-  }, [queryParams]);
+    const newQueryParams = {
+      ...queryParams,
+      search: debounceValue,
+    };
+    handleGetProductData(newQueryParams);
+  }, [queryParams, debounceValue]);
 
   // function to handle delete data
   const handleDeleteproductData = async (id) => {
@@ -140,12 +152,21 @@ const Index = () => {
   return (
     <>
       <Grid container mb={3} sx={{ justifyContent: "space-between" }}>
-        <Grid item lg={6}>
-          {/* <CustomInput /> */}
+        <Grid item lg={4}>
+          <CustomInput
+            startAdornment={<SearchRoundedIcon />}
+            value={searchValue}
+            name={"searchProduct"}
+            placeholder="search product"
+            handleChange={(e) => setSearchValue(e.target.value)}
+          />
         </Grid>
         <Grid item lg={2}>
           <CustomButton
             type={"button"}
+            sx={{
+              m: 0,
+            }}
             startIcon={<AddIcon />}
             onClick={handleRedirect}
             variant={"contained"}
@@ -194,7 +215,7 @@ const Index = () => {
                   >
                     <DeleteIcon />
                   </IconButton>
-                  <IconButton
+                  {/* <IconButton
                     aria-label="primary"
                     color="primary"
                     sx={{
@@ -203,7 +224,7 @@ const Index = () => {
                     }}
                   >
                     <RemoveRedEyeIcon />
-                  </IconButton>
+                  </IconButton> */}
                 </Box>
               ),
             }))

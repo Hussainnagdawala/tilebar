@@ -65,14 +65,14 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
                     borderRadius: "10px",
                     mb: 3,
                     background: HandleMatchPathActive(item.path)
-                      ? colors.secondary.light
+                      ? colors.white.main
                       : "transparent",
                     color: HandleMatchPathActive(item.path)
                       ? colors.primary.main
                       : colors.white.main,
                     "&:hover": {
                       background:
-                        HandleMatchPathActive(item.path) && colors.secondary.light,
+                        HandleMatchPathActive(item.path) && colors.white.main,
                     },
                   }}
                   onClick={() => handleMenuItemClick(item)}
@@ -91,7 +91,7 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
                         sx={{
                           color: HandleMatchPathActive(item.path)
                             ? colors.primary.main
-                            : colors.secondary.light,
+                            : colors.white.main,
                         }}
                       />
                     </ListItemIcon>
@@ -173,52 +173,6 @@ export const NavigationLists = ({ handleDrawerToggle }) => {
             );
           })}
       </List>
-      {/* ends */}
-      {/* <List sx={{ px: 4 }}>
-        {globalConstant.UTILITY_MENU_LIST.map((item) => {
-          const Icon = item.icon;
-          return (
-            <React.Fragment key={item.title}>
-              <ListItem
-                disablePadding
-                sx={{
-                  borderRadius: "10px",
-                  mb: 3,
-                  background: HandleMatchPathActive(item.path)
-                    ? colors.primary.main
-                    : "transparent",
-                  color: HandleMatchPathActive(item.path)
-                    ? colors.white.main
-                    : colors.primary.main,
-                  "&:hover": {
-                    background:
-                      HandleMatchPathActive(item.path) && colors.primary.main,
-                  },
-                }}
-                onClick={() => handleMenuItemClick(item)}
-              >
-                <ListItemButton
-                  sx={styles.onHoverBackgroundTransparent}
-                  selected={HandleMatchPathActive(item.path)}
-                >
-                  <ListItemIcon sx={{ minWidth: "45px" }}>
-                    <Icon
-                      width={"22px"}
-                      height={"22px"}
-                      color={
-                        HandleMatchPathActive(item.path)
-                          ? colors.white.main
-                          : colors.primary.main
-                      }
-                    />
-                  </ListItemIcon>
-                  <ListItemText sx={styles.listItemText} primary={item.title} />
-                </ListItemButton>
-              </ListItem>
-            </React.Fragment>
-          );
-        })}
-      </List> */}
     </Stack>
   );
 };
